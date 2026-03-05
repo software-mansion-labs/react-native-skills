@@ -11,14 +11,32 @@ Software Mansion's production audio patterns for React Native.
 
 ## AudioContext and AudioRecorder as Singletons
 
-Instantiate `AudioContext` or `AudioRecorder` once at module level and reuse across the app. Each instantiation negotiates with the underlying audio session — doing it per render or per operation wastes memory and risks session conflicts.
+Encapsulate `AudioContext` in a singleton class that manages lifecycle, audio nodes, and playback methods. This separates audio logic from React components and makes state consistent across the app. Multiple `AudioContext` instances can end up in conflicting states (one running, another suspended) if not actively managed.
 
 ```tsx
-// audio.ts
-import { AudioContext } from 'appl';
+// AudioManager.ts
+import { AudioContext } from 'react-native-audio-api';
 
-export const audioContext = new AudioContext();
+class AudioManager {
+  private static instance: AudioManager;
+  readonly context: AudioContext;
+
+  private constructor() {
+    this.context = new AudioContext();
+  }
+
+  static getInstance(): AudioManager {
+    if (!AudioManager.instance) {
+      AudioManager.instance = new AudioManager();
+    }
+    return AudioManager.instance;
+  }
+}
+
+export const audioManager = AudioManager.getInstance();
 ```
+
+The same principle applies to `AudioRecorder` — instantiate once and reuse.
 
 ```tsx
 // recorder.ts
@@ -26,8 +44,6 @@ import { AudioRecorder } from 'react-native-audio-api';
 
 export const recorder = new AudioRecorder();
 ```
-
-Pass the singleton through React context or import it directly — whichever fits the app's architecture.
 
 ---
 
@@ -90,6 +106,8 @@ await setAudioModeAsync({
 
 Session activation and deactivation are time-expensive native calls. Activate once when the audio feature mounts and deactivate once when it unmounts — not around individual playback or recording operations.
 
+Use `suspend()` when audio is temporarily not needed, and `close()` when audio is done permanently. A running `AudioContext` plays silence even with no source nodes connected, draining battery. On iOS, a running `AudioContext` also prevents the lock screen from showing a paused state.
+
 ```tsx
 useEffect(() => {
   async function startSession() {
@@ -100,9 +118,16 @@ useEffect(() => {
   startSession();
 
   return () => {
+    // suspend() for temporary pause (screen unmounts but audio may resume later)
     audioContext.suspend();
   };
 }, []);
+```
+
+Call `close()` when the audio feature is permanently torn down to release system resources:
+
+```tsx
+audioContext.close();
 ```
 
 Wrapping every sound play or record call in activate/deactivate pairs adds perceptible latency and unnecessarily interrupts other apps' audio.
