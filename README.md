@@ -1,5 +1,7 @@
 # React Native Skills
 
+> **Work in progress.** This repository is actively being developed. Some sub-skills are stubs and more content is on the way.
+
 Production-ready patterns for React Native development, packaged as [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/skills). Maintained by [Software Mansion](https://swmansion.com/).
 
 Add a skill to your project and your AI coding agent gets up-to-date guidance for animations, gestures, on-device AI, audio, and other React Native features. Works with Claude Code, Cursor, Windsurf, and other tools that support the skill format.
