@@ -30,7 +30,7 @@ Check package.json - "react-native-gesture-handler" version
 
 ## Critical Rules
 
-`useMemo` every gesture — without it, gesture objects recreate on every render, causing recognizers to re-attach and lose state:
+`useMemo` every gesture - without it, gesture objects recreate on every render, causing recognizers to re-attach and lose state:
 
 ```tsx
 const pan = useMemo(() => Gesture.Pan().onBegin(...).onUpdate(...).onEnd(...), []);
