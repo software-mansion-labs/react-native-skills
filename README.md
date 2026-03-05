@@ -19,6 +19,7 @@ Production patterns for React Native apps on the New Architecture, covering:
 | **SVG** | Vector graphics, icons, charts, illustrations with React Native SVG |
 | **Haptics** | Tactile feedback, vibration patterns, impact and notification haptics |
 | **On-device AI** | LLMs, computer vision, OCR, audio processing, embeddings with React Native ExecuTorch |
+| **Multimedia** | Video playback, camera, image picking, media recording and processing |
 | **Rich Text** | Formatted text, markdown, HTML rendering, text editors |
 | **Multithreading** | Background processing, Worklets, offloading computation from the JS thread |
 | **Audio** | Playback, recording, visualization, session management with React Native Audio API |
@@ -41,6 +42,7 @@ react-native-skills/
             ├── on-device-ai/
             │   ├── SKILL.md            # On-device AI sub-skill
             │   └── references/         # Detailed API references
+            ├── multimedia/SKILL.md
             ├── rich-text/SKILL.md
             ├── multithreading/SKILL.md
             └── audio/SKILL.md
