@@ -1,5 +1,5 @@
 ---
-name: react-native-executorch
+name: on-device-ai
 description: Integrate on-device AI into React Native apps using React Native ExecuTorch, which provides APIs for LLMs, computer vision, OCR, audio processing, and embeddings without cloud dependencies, as well as a variety of pre-exported models for common use cases. Use when user asks to build AI features into mobile apps - AI chatbots, image classification, object detection, style transfer, OCR, document parsing, speech processing, or semantic search - all running locally without cloud dependencies. Use when user mentions offline support, privacy, latency or cost concerns in AI-based applications.
 ---
 
