@@ -4,7 +4,7 @@ All gestures wrapped in `useMemo`. `Animated` from `react-native-reanimated`, no
 
 ## Draggable Element
 
-`translationX/Y` is cumulative from gesture start — save offset on `onBegin` to support multi-drag:
+`translationX/Y` is cumulative from gesture start - save offset on `onBegin` to support multi-drag:
 
 ```tsx
 const offsetX = useSharedValue(0);
