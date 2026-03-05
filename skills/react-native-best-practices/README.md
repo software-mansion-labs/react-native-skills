@@ -13,6 +13,7 @@ Add this skill to give your AI coding agent accurate, current guidance for Softw
 | [SVG](./references/svg/) | React Native SVG: vector graphics, icons, charts, illustrations | Stub |
 | [Haptics](./references/haptics/) | Tactile feedback, vibration patterns, impact/notification haptics | Stub |
 | [On-device AI](./references/on-device-ai/) | React Native ExecuTorch: LLMs, computer vision, OCR, speech, embeddings | Complete |
+| [Multimedia](./references/multimedia/) | Video playback and streaming | Stub |
 | [Rich Text](./references/rich-text/) | Formatted text, markdown, HTML rendering, text editors | Stub |
 | [Multithreading](./references/multithreading/) | Worklets, background processing, offloading computation | Stub |
 | [Audio](./references/audio/) | React Native Audio API: playback, recording, visualization, sessions | Complete |
