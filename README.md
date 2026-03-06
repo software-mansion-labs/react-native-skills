@@ -30,18 +30,22 @@ Production patterns for React Native apps on the New Architecture, covering:
 react-native-skills/
 └── skills/
     └── react-native-best-practices/
-        ├── SKILL.md                    # Main skill entry point
+        ├── SKILL.md                        # Main skill entry point
         └── references/
             ├── animations/
-            │   ├── SKILL.md            # Animation sub-skill
-            │   ├── animations.md       # Core animation patterns
+            │   ├── SKILL.md                # Animation sub-skill
+            │   ├── animations.md           # Core animation patterns
             │   └── animations-performance.md
             ├── gestures/SKILL.md
             ├── svg/SKILL.md
+            │   ├── SKILL.md                # SVG sub-skill
+            │   ├── svg.md                  # Setup, issues and performance
+            │   ├── animation-patterns.md   # SVG animation patterns
+            │   └── when-to-use.md  
             ├── haptics/SKILL.md
             ├── on-device-ai/
-            │   ├── SKILL.md            # On-device AI sub-skill
-            │   └── references/         # Detailed API references
+            │   ├── SKILL.md                # On-device AI sub-skill
+            │   └── references/             # Detailed API references
             ├── multimedia/SKILL.md
             ├── rich-text/SKILL.md
             ├── multithreading/SKILL.md

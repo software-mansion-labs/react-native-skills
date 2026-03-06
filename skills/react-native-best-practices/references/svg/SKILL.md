@@ -11,3 +11,6 @@ Software Mansion's production SVG patterns for React Native using React Native S
 
 | File | When to read |
 |------|-------------|
+| `when-to-use.md` | Deciding between react-native-svg, expo-image, @expo/vector-icons, Skia, or Lottie |
+| `svg.md` | Installing react-native-svg; performance considerations; known issues |
+| `animation-patterns.md` | Animating SVG elements and paths with Reanimated |
