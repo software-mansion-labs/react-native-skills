@@ -1,6 +1,6 @@
 ---
 name: view-network-request-details
-description: "Best practices for using the view_network_request_details tool in Radon IDE. Returns full details of a specific network request including headers, body, and metadata. Use after view_network_logs to drill into a specific request for debugging. Trigger on: 'request details', 'request headers', 'response body', 'request body', 'inspect request', 'API response', or any follow-up to viewing network logs where you need the full details of a particular request."
+description: "Best practices for using the view_network_request_details tool in Radon IDE. Returns full details of a specific network request including headers, body, and metadata. Use after view_network_logs to drill into a specific request for debugging. Trigger on: 'request details', 'request headers', 'response body', 'request body', 'inspect request', 'API response', or any follow-up to viewing network logs where full details of a particular request are needed."
 ---
 
 # view_network_request_details

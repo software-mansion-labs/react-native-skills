@@ -1,6 +1,6 @@
 ---
 name: query-documentation
-description: "Best practices for using the query_documentation tool in Radon IDE. Returns documentation snippets relevant to a provided query from a curated React Native and Expo knowledge base. Use when you need accurate, up-to-date documentation for React Native APIs, Expo modules, or related libraries. Trigger on: 'how to use', 'documentation for', 'API reference', 'React Native docs', 'Expo docs', 'how does X work in React Native', 'what is the API for', or any question about React Native or Expo library usage that benefits from authoritative documentation."
+description: "Best practices for using the query_documentation tool in Radon IDE. Returns documentation snippets relevant to a provided query from a curated React Native and Expo knowledge base. Use when accurate, up-to-date documentation is needed for React Native APIs, Expo modules, or related libraries. Trigger on: 'how to use', 'documentation for', 'API reference', 'React Native docs', 'Expo docs', 'how does X work in React Native', 'what is the API for', or any question about React Native or Expo library usage that benefits from authoritative documentation."
 ---
 
 # query_documentation
