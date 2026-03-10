@@ -7,10 +7,6 @@ description: "Best practices for using the view_component_tree tool in Radon IDE
 
 Displays the React component tree of the running app, filtered to user-authored components with source file locations.
 
-```
-view_component_tree()
-```
-
 ## Output format
 
 Indented XML-like tree with component names, source paths, line numbers, and HOC descriptors:
@@ -28,8 +24,8 @@ Indented XML-like tree with component names, source paths, line numbers, and HOC
 
 ## Key behaviors
 
-- **Only user-authored components** are shown — `node_modules` components (View, Text, ScrollView, third-party) are excluded.
-- **Only currently mounted components** are visible — conditionally rendered components with `false` condition won't appear.
+- **Only user-authored components** are shown - `node_modules` components (View, Text, ScrollView, third-party) are excluded.
+- **Only currently mounted components** are visible - conditionally rendered components with `false` condition won't appear.
 - Paths are relative to the workspace root.
 
 ## Best practices
@@ -39,5 +35,5 @@ Indented XML-like tree with component names, source paths, line numbers, and HOC
 
 ## Error handling
 
-- **App not running / device off:** turn on the Radon IDE emulator.
 - **Corrupted tree:** reload the app with `reload_application({ reloadMethod: "reloadJs" })`, then retry.
+- **Device off:** request the user to turn on the Radon IDE emulator.

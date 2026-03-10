@@ -7,10 +7,6 @@ description: "Best practices for using the view_application_logs tool in Radon I
 
 Returns all build, bundling, and runtime logs plus an optional PNG screenshot. **Call this first when the user reports any issue.**
 
-```
-view_application_logs()
-```
-
 ## Log sections
 
 | Section                | Look here for                                                                       |
@@ -21,15 +17,15 @@ view_application_logs()
 | `NATIVE-SIDE APP LOGS` | Native crash reports, native module init errors, memory warnings                    |
 | `JS-SIDE APP LOGS`     | Application exceptions, React errors, state management issues, `console.log` output |
 
-Missing sections mean no output on that channel — this is normal.
+Missing sections mean no output on that channel - this is normal.
 
 ## Key rules
 
-- **Read all sections before diagnosing** — issues often span layers (e.g., native crash triggered by JS error).
+- **Read all sections before diagnosing** - issues often span layers (e.g., native crash triggered by JS error).
 - Build-time issues: focus on BUILD PROCESS + JS PACKAGER. Runtime: focus on NATIVE-SIDE + JS-SIDE.
 - Based on findings, follow up with `view_component_tree` (layout), `view_network_logs` (API), or `reload_application` (reset).
 
 ## Error handling
 
-- **Radon IDE not launched:** open the Radon IDE panel first.
 - **No build run:** select a project and device in the Radon IDE panel.
+- **Device off / Radon IDE not launched:** request the user to turn on the Radon IDE emulator.

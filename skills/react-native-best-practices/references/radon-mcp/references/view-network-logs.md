@@ -7,8 +7,10 @@ description: "Best practices for using the view_network_logs tool in Radon IDE. 
 
 Returns a paginated list of all network requests (method, URL, status, duration, size). 50 entries per page.
 
+## Input schema:
+
 ```
-view_network_logs({ pageIndex: "latest" | "<number>" })
+{ pageIndex: "latest" | "<number>" }
 ```
 
 ## Output format
@@ -18,17 +20,17 @@ view_network_logs({ pageIndex: "latest" | "<number>" })
 {id: abc123} "GET https://api.example.com/users" 200 OK json 1.2kB 150ms
 ```
 
-The `requestId` (e.g., `abc123`) is used to drill into details with `view_network_request_details`.
+The `requestId` (e.g., `abc123`) is used to inspect further details with `view_network_request_details`.
 
 ## Key rules
 
-- **Start with `"latest"`** for current issues — almost always the right starting point.
-- Use numeric page indexes (`"0"`, `"1"`, ...) to search older requests.
-- **Follow up with `view_network_request_details`** to inspect headers, body, and metadata of a specific request.
-- If no logs returned, the network inspector may not be enabled — it must be active for requests to be captured.
+- **Start with `"latest"`** for current issues - almost always the right starting point.
+- Use numeric page indexes (`"0"`, `"1"`, ...) to search older requests, with `0` being the oldest requests page.
+- **Follow up with `view_network_request_details`** to inspect headers, body, and metadata of a specific request that could be problematic.
+- If no logs returned, the network inspector may not be enabled - it must be active for requests to be captured.
 
 ## Error handling
 
-- **Device off:** turn on the Radon IDE emulator.
 - **Network inspector unavailable:** ensure the Network panel is available in Radon IDE.
 - **Invalid/out-of-range page index:** use `"latest"` or check the page header for valid range.
+- **Device off:** request the user to turn on the Radon IDE emulator.

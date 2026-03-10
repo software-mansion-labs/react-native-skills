@@ -7,8 +7,10 @@ description: "Best practices for using the reload_application tool in Radon IDE.
 
 Reloads the app in the Radon IDE emulator. Three methods with escalating scope:
 
+## Input schema:
+
 ```
-reload_application({ reloadMethod: "reloadJs" | "restartProcess" | "rebuild" })
+{ reloadMethod: "reloadJs" | "restartProcess" | "rebuild" }
 ```
 
 ## Reload methods
@@ -19,15 +21,15 @@ reload_application({ reloadMethod: "reloadJs" | "restartProcess" | "rebuild" })
 | `restartProcess` | Seconds | Native module in bugged state, need cold start, `reloadJs` didn't fix it   |
 | `rebuild`        | Minutes | Changed native code, added/removed native dependency, changed build config |
 
-**Always start with the lightest method and escalate:** `reloadJs` -> `restartProcess` -> `rebuild`.
+**Always start with the lightest method and escalate, unless you are already certain that a more powerful restart method is required:** `reloadJs` -> `restartProcess` -> `rebuild`.
 
 ## Key behaviors
 
-- The tool **waits until the app is running** before returning — safe to call `view_screenshot` or other tools immediately after.
+- The tool **waits until the app is running** before returning - safe to call `view_screenshot` or other tools immediately after.
 - After reloading, use `view_screenshot` or `view_application_logs` to confirm the app is healthy.
 - `reloadJs` resets all React state, context providers, and in-memory stores.
 
 ## Error handling
 
-- **Device off:** asks to turn on the Radon IDE emulator.
 - **Reload failure:** check `view_application_logs` for build or runtime errors.
+- **Device off / Radon IDE not launched:** request the user to turn on the Radon IDE emulator.

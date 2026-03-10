@@ -7,15 +7,17 @@ description: "Best practices for using the query_documentation tool in Radon IDE
 
 Returns documentation snippets from a curated React Native / Expo knowledge base on the Radon AI backend.
 
+## Input schema:
+
 ```
-query_documentation({ text: "<query string>" })
+{ text: "<query string>" }
 ```
 
 ## Key rules
 
 - Write **specific, focused queries** targeting a concrete API or feature.
 - Include the **library name** when relevant (e.g., `"react-native-reanimated useSharedValue hook"`).
-- **Trust returned docs over training data** for version-specific details — RN/Expo APIs change between versions.
+- **Trust returned docs over training data** for version-specific details - RN/Expo APIs change between versions.
 - Query docs **before implementing** features that rely on RN/Expo APIs.
 - For high-level library evaluation, use `get_library_description` instead.
 
@@ -33,5 +35,5 @@ query_documentation({ text: "navigation" })
 
 ## Error handling
 
-- **Invalid/missing license:** returns a license-required message. Ensure the user has an active Radon IDE license.
+- **Invalid/missing license:** ensure the user has an active Radon IDE license.
 - **Network failure:** ensure internet connectivity.

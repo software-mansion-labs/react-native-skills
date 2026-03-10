@@ -7,22 +7,25 @@ description: "Best practices for using the view_network_request_details tool in 
 
 Returns full details of a specific network request (headers, body, metadata). **Always call `view_network_logs` first** to obtain the `requestId`.
 
+## Input schema:
+
 ```
-view_network_request_details({ requestId: "<string>" })
+{ requestId: "<string>" }
 ```
 
 ## Workflow
 
-1. `view_network_logs({ pageIndex: "latest" })` — find the problematic request.
-2. Note the `requestId` from the output.
-3. `view_network_request_details({ requestId: "<id>" })` — inspect full details.
+1. `view_network_logs({ pageIndex: "latest" })` - displays all recent requests.
+2. You notice a request that's weird, problematic or otherwise interesting.
+3. Note the `requestId` from the output.
+4. `view_network_request_details({ requestId: "<id>" })` - inspect full details of the problematic request.
 
 ## Key behaviors
 
 - **Sensitive headers are redacted** (case-insensitive match on: `auth`, `cookie`, `token`, `secret`, `key`, `session`, `credential`). You can still check header presence/absence and non-sensitive headers.
-- **Response bodies > 1000 chars are truncated** with a placeholder showing MIME type and original size. For full payload, direct the user to the Radon IDE Network panel.
+- **Response bodies > 1000 chars are truncated** with a placeholder showing MIME type and original size. For full payload, inspecting images and such, direct the user to the Radon IDE Network panel.
 
 ## Error handling
 
-- **Request ID not found:** verify it was copied correctly from `view_network_logs`.
-- **Device off:** turn on the Radon IDE emulator.
+- **Request ID not found:** verify it was copied correctly from `view_network_logs`. The request ID includes the full string within `{}`
+- **Device off:** request the user to turn on the Radon IDE emulator.
