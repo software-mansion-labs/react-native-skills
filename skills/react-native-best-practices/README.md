@@ -17,6 +17,7 @@ Add this skill to give your AI coding agent accurate, current guidance for Softw
 | [Rich Text](./references/rich-text/) | Rich text editing with react-native-enriched: formatting toolbar, mentions, links | Complete |
 | [Multithreading](./references/multithreading/) | Worklets, background processing, offloading computation | Stub |
 | [Audio](./references/audio/) | React Native Audio API: playback, recording, visualization, sessions | Complete |
+| [Radon MCP](./references/radon-mcp/) | Radon IDE MCP tools: screenshots, logs, component tree, network inspector, reload, docs | Complete |
 
 **Complete** = full reference documentation with code examples. **Stub** = frontmatter and description only, reference content coming soon.
 
@@ -46,7 +47,18 @@ react-native-best-practices/
     │       └── core-utilities.md     # ResourceFetcher, error handling, custom models
     ├── rich-text/SKILL.md
     ├── multithreading/SKILL.md
-    └── audio/SKILL.md                # AudioContext singletons, buffer state, visualizations
+    ├── audio/SKILL.md                # AudioContext singletons, buffer state, visualizations
+    └── radon-mcp/
+        ├── SKILL.md                  # Routing table for Radon IDE MCP tools
+        └── references/
+            ├── view-application-logs.md        # Build, bundler, and runtime logs
+            ├── view-screenshot.md              # Capture current app screen
+            ├── view-component-tree.md          # Mounted React component hierarchy
+            ├── view-network-logs.md            # Inspecting HTTP traffic list
+            ├── view-network-request-details.md # Headers, body, metadata for a request
+            ├── reload-application.md           # JS reload, process restart, full rebuild
+            ├── query-documentation.md          # RN/Expo docs from curated knowledge base
+            └── get-library-description.md      # npm library evaluation
 ```
 
 ## Adding a Sub-skill
