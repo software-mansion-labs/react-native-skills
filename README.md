@@ -23,6 +23,7 @@ Production patterns for React Native apps on the New Architecture, covering:
 | **Rich Text** | Rich text editing with react-native-enriched: formatting toolbar, mentions, links |
 | **Multithreading** | Background processing, Worklets, offloading computation from the JS thread |
 | **Audio** | Playback, recording, visualization, session management with React Native Audio API |
+| **Radon MCP** | Radon IDE MCP tools: screenshots, logs, component tree, network inspector, reload, docs |
 
 ## Repository Structure
 
@@ -53,7 +54,18 @@ react-native-skills/
             ├── multimedia/SKILL.md
             ├── rich-text/SKILL.md
             ├── multithreading/SKILL.md
-            └── audio/SKILL.md
+            ├── audio/SKILL.md
+            └── radon-mcp/
+                ├── SKILL.md
+                └── references/
+                    ├── view-application-logs.md
+                    ├── view-screenshot.md
+                    ├── view-component-tree.md
+                    ├── view-network-logs.md
+                    ├── view-network-request-details.md
+                    ├── reload-application.md
+                    ├── query-documentation.md
+                    └── get-library-description.md
 ```
 
 The top-level `SKILL.md` acts as a table of contents. Reference files load only when relevant to the current task, keeping the context window focused.
