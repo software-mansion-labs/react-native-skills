@@ -26,4 +26,3 @@ Read the relevant sub-skill for the topic at hand. All sub-skills are in `refere
 | `references/rich-text/SKILL.md` | Rich text editor, formatted text input, WYSIWYG, mentions, react-native-enriched |
 | `references/multithreading/SKILL.md` | Background processing, Worklets, offloading computation from the JS thread |
 | `references/audio/SKILL.md` | Audio playback, recording, music players, audio sessions |
-| `references/radon-mcp/SKILL.md` | Radon IDE MCP tools - extensive React native app debugging, inspecting, building. This tool allows viewing screenshots, reading logs, inspecting the component tree, debugging network requests, reloading the app, querying RN/Expo docs |
