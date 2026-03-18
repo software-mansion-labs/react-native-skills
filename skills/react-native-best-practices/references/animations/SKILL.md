@@ -9,6 +9,10 @@ Software Mansion's production animation patterns for React Native on Reanimated 
 
 Load at most one reference file per question. For API signatures and config options, webfetch the documentation pages linked in each reference file.
 
+## Critical Rules
+
+- **NEVER use `runOnJS`**. It is removed in Reanimated 4. Use `scheduleOnRN(fn, ...args)` from `react-native-worklets` instead. This applies everywhere: scroll handlers, gesture callbacks, `useAnimatedReaction`, `useFrameCallback`, and any other worklet context.
+
 ## References
 
 | File | When to read |
