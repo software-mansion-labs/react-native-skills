@@ -22,5 +22,5 @@ Read the relevant sub-skill for the topic at hand. All sub-skills are in `refere
 | `references/svg/SKILL.md` | Vector graphics, icons, charts, illustrations using React Native SVG |
 | `references/on-device-ai/SKILL.md` | On-device AI: LLMs, computer vision, OCR, audio processing, text/image embeddings |
 | `references/rich-text/SKILL.md` | Rich text editor, formatted text input, WYSIWYG, mentions, react-native-enriched |
-| `references/multithreading/SKILL.md` | Background processing, Worklets, offloading computation from the JS thread |
+| `references/multithreading/SKILL.md` | Multithreading, react-native-worklets, background processing, Worker Runtimes, UI thread, scheduleOnUI, scheduleOnRN, Serializable, Synchronizable, offloading computation from the JS thread |
 | `references/audio/SKILL.md` | Audio playback, recording, music players, audio sessions |
