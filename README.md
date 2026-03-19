@@ -76,7 +76,8 @@ react-native-skills/
         │   │   ├── animations.md
         │   │   ├── gpu-animations.md
         │   │   ├── layout-animations.md
-        │   │   └── scroll-and-events.md
+        │   │   ├── scroll-and-events.md
+        │   │   └── svg-animations.md
         │   ├── audio/
         │   │   └── SKILL.md
         │   ├── gestures/
@@ -112,7 +113,6 @@ react-native-skills/
         │   │   └── SKILL.md
         │   └── svg/
         │       ├── SKILL.md
-        │       ├── animation-patterns.md
         │       ├── svg.md
         │       └── when-to-use.md
         ├── README.md
