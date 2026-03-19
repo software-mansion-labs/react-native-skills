@@ -97,16 +97,8 @@ react-native-skills/
         │   │   ├── shared-memory.md
         │   │   └── threading-api.md
         │   ├── on-device-ai/
-        │   │   ├── references/
-        │   │   │   ├── core-utilities.md
-        │   │   │   ├── reference-audio.md
-        │   │   │   ├── reference-cv-2.md
-        │   │   │   ├── reference-cv.md
-        │   │   │   ├── reference-llms.md
-        │   │   │   ├── reference-models.md
-        │   │   │   ├── reference-nlp.md
-        │   │   │   └── reference-ocr.md
-        │   │   └── SKILL.md
+        │   │   ├── SKILL.md
+        │   │   └── best-practices.md
         │   ├── rich-text/
         │   │   └── SKILL.md
         │   └── svg/

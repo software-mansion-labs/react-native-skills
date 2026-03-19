@@ -11,7 +11,7 @@ Add this skill to give your AI coding agent accurate, current guidance for Softw
 | [Animations](./references/animations/) | Reanimated 4, CSS transitions, CSS animations, shared values, GPU shader animations (WebGPU, TypeGPU), layout animations, scroll-driven animations, SVG animations, 120fps, performance flags | Complete |
 | [Gestures](./references/gestures/) | Gesture Handler: tap, pan, pinch, rotation, fling, hover, long press, Pressable, RectButton, Swipeable, DrawerLayout, gesture composition, testing | Complete |
 | [SVG](./references/svg/) | React Native SVG: when to use vs expo-image/Skia/Lottie/Rive/fonts/WebView, installation, loading (URI/XML/file), touch events, filters, FilterImage, performance pitfalls, iOS memory leaks | Complete |
-| [On-device AI](./references/on-device-ai/) | React Native ExecuTorch: LLMs, computer vision, OCR, speech, text/image embeddings, model management | Complete |
+| [On-device AI](./references/on-device-ai/) | React Native ExecuTorch: LLMs, computer vision, OCR, speech, text/image embeddings, best practices, with pointers to official docs | Complete |
 | [Rich Text](./references/rich-text/) | Rich text editing with react-native-enriched, Markdown rendering with react-native-enriched-markdown | Complete |
 | [Multithreading](./references/multithreading/) | react-native-worklets: Worker Runtimes, scheduling APIs, shared memory, Serializable, Synchronizable | Complete |
 | [Audio](./references/audio/) | React Native Audio API: playback, recording, visualization, audio sessions | Complete |
@@ -47,16 +47,8 @@ react-native-best-practices/
     │   ├── when-to-use.md               # Choosing between svg, expo-image, icons, Skia, Lottie
     │   └── svg.md                        # Installation, loading (URI/XML/file), touch events, filters, FilterImage, performance
     ├── on-device-ai/
-    │   ├── SKILL.md                      # Use cases, capabilities overview, getting started
-    │   └── references/
-    │       ├── reference-llms.md         # LLM hooks, tool calling, structured output
-    │       ├── reference-cv.md           # Classification, detection, segmentation
-    │       ├── reference-cv-2.md         # Style transfer, text-to-image, image embeddings
-    │       ├── reference-ocr.md          # Horizontal/vertical text recognition
-    │       ├── reference-audio.md        # Speech-to-text, text-to-speech, VAD
-    │       ├── reference-nlp.md          # Text embeddings, tokenization
-    │       ├── reference-models.md       # Model catalog, loading strategies, device constraints
-    │       └── core-utilities.md         # ResourceFetcher, error handling, custom models
+    │   ├── SKILL.md                      # Doc map with webfetch URLs for each feature
+    │   └── best-practices.md             # Model loading, device constraints, error handling, processing tips
     ├── rich-text/
     │   └── SKILL.md                      # Editor and renderer patterns, style customization
     ├── multithreading/
