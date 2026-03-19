@@ -9,6 +9,14 @@ Software Mansion's production multithreading patterns for React Native using `re
 
 React Native Worklets lets you run JavaScript code in parallel across multiple threads and runtimes. It powers Reanimated, Gesture Handler, and Skia under the hood.
 
+## Version Check
+
+Before answering any multithreading question, check that `react-native-worklets` is up to date:
+
+1. Read the user's `package.json` to find the installed `react-native-worklets` version.
+2. Run `npm view react-native-worklets version` to get the latest published version.
+3. If the installed version is older than the latest, inform the user and recommend upgrading before proceeding with implementation advice.
+
 ## Runtime Model
 
 React Native apps have three kinds of runtimes. Picking the right target is the first decision:
