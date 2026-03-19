@@ -95,8 +95,6 @@ react-native-skills/
         │   │   ├── swipeable-and-drawer.md
         │   │   ├── tap-handling.md
         │   │   └── testing.md
-        │   ├── multimedia/
-        │   │   └── SKILL.md
         │   ├── multithreading/
         │   │   ├── SKILL.md
         │   │   ├── setup-and-advanced.md

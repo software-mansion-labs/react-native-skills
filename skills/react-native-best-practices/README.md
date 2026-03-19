@@ -15,9 +15,7 @@ Add this skill to give your AI coding agent accurate, current guidance for Softw
 | [Rich Text](./references/rich-text/) | Rich text editing with react-native-enriched, Markdown rendering with react-native-enriched-markdown | Complete |
 | [Multithreading](./references/multithreading/) | react-native-worklets: Worker Runtimes, scheduling APIs, shared memory, Serializable, Synchronizable | Complete |
 | [Audio](./references/audio/) | React Native Audio API: playback (buffer sources, oscillators, streaming, queued playback), recording (file, data callback, graph processing), effects (gain, filters, delay, convolver, panner, waveshaper), analysis and visualization, worklets (custom processing, synthesis, UIRuntime/AudioRuntime), system integration (sessions, interruptions, notifications, permissions), testing | Complete |
-| [Multimedia](./references/multimedia/) | Video playback and streaming | Stub |
-
-**Complete** = full reference documentation with code examples. **Stub** = frontmatter and description only, reference content coming soon.
+**Complete** = full reference documentation with code examples.
 
 ## Structure
 
@@ -67,8 +65,6 @@ react-native-best-practices/
     │   ├── effects-and-analysis.md       # GainNode (ADSR), filters, delay, convolver, panner, AnalyserNode, visualization
     │   ├── worklets.md                   # WorkletNode, WorkletSourceNode, WorkletProcessingNode, runtimes, performance
     │   └── system-and-notifications.md   # AudioManager, sessions, interruptions, notifications, permissions, testing
-    └── multimedia/
-        └── SKILL.md                      # Stub: video playback and streaming (coming soon)
 ```
 
 ## Adding a Sub-skill
