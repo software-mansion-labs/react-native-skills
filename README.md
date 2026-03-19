@@ -45,6 +45,7 @@ Production patterns for React Native apps on the New Architecture, covering:
 | **SVG** | Vector graphics, icons, charts, illustrations with React Native SVG |
 | **On-device AI** | LLMs, computer vision, OCR, audio processing, embeddings with React Native ExecuTorch |
 | **Rich Text** | Rich text editing with react-native-enriched and Markdown rendering with react-native-enriched-markdown: formatting toolbar, mentions, links, GFM tables, task lists, LaTeX math |
+| **Multithreading** | Worker Runtimes, scheduling APIs, shared memory with React Native Worklets |
 | **Audio** | Playback, recording, visualization, session management with React Native Audio API |
 
 ### [radon-mcp](./skills/radon-mcp/)
@@ -107,8 +108,6 @@ react-native-skills/
         │   │   │   └── reference-ocr.md
         │   │   └── SKILL.md
         │   ├── rich-text/
-        │   │   ├── references/
-        │   │   │   └── enriched-input-api.md
         │   │   └── SKILL.md
         │   └── svg/
         │       ├── SKILL.md

@@ -58,10 +58,7 @@ react-native-best-practices/
     │       ├── reference-models.md       # Model catalog, loading strategies, device constraints
     │       └── core-utilities.md         # ResourceFetcher, error handling, custom models
     ├── rich-text/
-    │   ├── SKILL.md                      # Editor and renderer patterns, style customization
-    │   └── references/
-    │       ├── enriched-input-api.md     # Complete EnrichedTextInput API
-    │       └── enriched-markdown-api.md  # Complete EnrichedMarkdownText API
+    │   └── SKILL.md                      # Editor and renderer patterns, style customization
     ├── multithreading/
     │   ├── SKILL.md                      # Runtime model, API decision tree, critical rules
     │   ├── threading-api.md              # Scheduling APIs, Worker Runtimes, sync/async
