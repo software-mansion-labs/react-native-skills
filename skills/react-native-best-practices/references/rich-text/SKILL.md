@@ -81,19 +81,26 @@ export default function RichEditor() {
 
 ### Supported styles
 
-| Style | Toggle method | Type |
-|-------|--------------|------|
-| Bold | `toggleBold()` | Inline |
-| Italic | `toggleItalic()` | Inline |
-| Underline | `toggleUnderline()` | Inline |
-| Strikethrough | `toggleStrikeThrough()` | Inline |
-| Inline code | `toggleInlineCode()` | Inline |
-| H1-H6 | `toggleH1()` ... `toggleH6()` | Paragraph |
-| Code block | `toggleCodeBlock()` | Paragraph |
-| Block quote | `toggleBlockQuote()` | Paragraph |
-| Ordered list | `toggleOrderedList()` | Paragraph |
-| Unordered list | `toggleUnorderedList()` | Paragraph |
-| Checkbox list | `toggleCheckboxList(checked)` | Paragraph |
+The `OnChangeStateEvent` key column shows the exact property name on the event object returned by `onChangeState`. Use these keys when reading style state (e.g. `stylesState.strikeThrough.isActive`). Note that casing varies (e.g. `strikeThrough` with capital T, `inlineCode` with capital C).
+
+| Style | Toggle method | `OnChangeStateEvent` key | Type |
+|-------|--------------|--------------------------|------|
+| Bold | `toggleBold()` | `bold` | Inline |
+| Italic | `toggleItalic()` | `italic` | Inline |
+| Underline | `toggleUnderline()` | `underline` | Inline |
+| Strikethrough | `toggleStrikeThrough()` | `strikeThrough` | Inline |
+| Inline code | `toggleInlineCode()` | `inlineCode` | Inline |
+| H1 | `toggleH1()` | `h1` | Paragraph |
+| H2 | `toggleH2()` | `h2` | Paragraph |
+| H3 | `toggleH3()` | `h3` | Paragraph |
+| H4 | `toggleH4()` | `h4` | Paragraph |
+| H5 | `toggleH5()` | `h5` | Paragraph |
+| H6 | `toggleH6()` | `h6` | Paragraph |
+| Code block | `toggleCodeBlock()` | `codeBlock` | Paragraph |
+| Block quote | `toggleBlockQuote()` | `blockQuote` | Paragraph |
+| Ordered list | `toggleOrderedList()` | `orderedList` | Paragraph |
+| Unordered list | `toggleUnorderedList()` | `unorderedList` | Paragraph |
+| Checkbox list | `toggleCheckboxList(checked)` | `checkboxList` | Paragraph |
 
 ### Links
 
@@ -134,7 +141,7 @@ ref.current?.setImage(imageUri, width, height);
 
 Images are inserted at the cursor position (or replace selected text) and affect line height. You are responsible for providing correct dimensions.
 
-For the full API (all props, ref methods, events, HtmlStyle customization, context menu items), read `references/enriched-input-api.md`.
+For the full API (all props, ref methods, events, HtmlStyle customization, context menu items), webfetch the [react-native-enriched README](https://github.com/software-mansion/react-native-enriched/blob/main/README.md).
 
 ---
 
@@ -271,7 +278,17 @@ Inline elements inherit typography from their parent block (fontSize, fontFamily
 - **Image caching**: Three-tier caching (memory originals, memory processed variants, disk) with request deduplication.
 - **Underline mode**: `md4cFlags={{ underline: true }}` makes `_text_` render as underline instead of italic.
 
-For the full API (all props, style properties, element structure, accessibility details, RTL setup), read `references/enriched-markdown-api.md`.
+For detailed API documentation, webfetch the relevant page from the upstream docs:
+
+- [API Reference (props, events)](https://github.com/software-mansion-labs/react-native-enriched-markdown/blob/main/docs/API_REFERENCE.md)
+- [Styles (MarkdownStyle properties)](https://github.com/software-mansion-labs/react-native-enriched-markdown/blob/main/docs/STYLES.md)
+- [Elements Structure (Markdown-to-native mapping)](https://github.com/software-mansion-labs/react-native-enriched-markdown/blob/main/docs/ELEMENTS_STRUCTURE.md)
+- [Accessibility (VoiceOver, TalkBack)](https://github.com/software-mansion-labs/react-native-enriched-markdown/blob/main/docs/ACCESSIBILITY.md)
+- [RTL Support](https://github.com/software-mansion-labs/react-native-enriched-markdown/blob/main/docs/RTL.md)
+- [Image Caching](https://github.com/software-mansion-labs/react-native-enriched-markdown/blob/main/docs/IMAGE_CACHING.md)
+- [Copy Options (Smart Copy, copy-as-Markdown)](https://github.com/software-mansion-labs/react-native-enriched-markdown/blob/main/docs/COPY_OPTIONS.md)
+- [LaTeX Math](https://github.com/software-mansion-labs/react-native-enriched-markdown/blob/main/docs/LATEX_MATH.md)
+- [macOS Support](https://github.com/software-mansion-labs/react-native-enriched-markdown/blob/main/docs/MACOS.md)
 
 ---
 

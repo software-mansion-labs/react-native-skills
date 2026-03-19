@@ -108,8 +108,7 @@ react-native-skills/
         │   │   └── SKILL.md
         │   ├── rich-text/
         │   │   ├── references/
-        │   │   │   ├── enriched-input-api.md
-        │   │   │   └── enriched-markdown-api.md
+        │   │   │   └── enriched-input-api.md
         │   │   └── SKILL.md
         │   └── svg/
         │       ├── SKILL.md
