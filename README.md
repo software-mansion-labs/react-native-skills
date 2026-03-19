@@ -80,7 +80,13 @@ react-native-skills/
         │   │   ├── scroll-and-events.md
         │   │   └── svg-animations.md
         │   ├── audio/
-        │   │   └── SKILL.md
+        │   │   ├── SKILL.md
+        │   │   ├── audio.md
+        │   │   ├── effects-and-analysis.md
+        │   │   ├── playback.md
+        │   │   ├── recording.md
+        │   │   ├── system-and-notifications.md
+        │   │   └── worklets.md
         │   ├── gestures/
         │   │   ├── SKILL.md
         │   │   ├── continuous-gestures.md
@@ -98,7 +104,10 @@ react-native-skills/
         │   │   └── threading-api.md
         │   ├── on-device-ai/
         │   │   ├── SKILL.md
-        │   │   └── best-practices.md
+        │   │   ├── llm.md
+        │   │   ├── setup.md
+        │   │   ├── speech.md
+        │   │   └── vision.md
         │   ├── rich-text/
         │   │   └── SKILL.md
         │   └── svg/
