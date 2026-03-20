@@ -6,7 +6,9 @@ react-native-svg implements the SVG standard as a React component tree, giving y
 
 ## Animating SVG Elements with Reanimated
 
-Use `Animated.createAnimatedComponent` to make any SVG element animatable:
+Use `Animated.createAnimatedComponent` to make any SVG element animatable.
+
+Do all value conversions directly inside the `useAnimatedStyle` or `useAnimatedProps` callback. Do **not** use `SVGAdapter` — handle conversions (string formatting, color processing, unit calculations) in place within the callback:
 
 ```tsx
 import Animated, {

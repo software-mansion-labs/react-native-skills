@@ -45,15 +45,16 @@ const animatedStyle = useAnimatedStyle(() => ({
 
 ### [useAnimatedProps](https://docs.swmansion.com/react-native-reanimated/docs/core/useAnimatedProps)
 
-For animating component properties (not styles). Use adapters for third-party components whose prop names differ between JS and native:
+For animating component properties (not styles). Do all value conversions directly inside the `useAnimatedProps` callback instead of using adapters like `SVGAdapter`:
 
 ```tsx
-import { SVGAdapter } from 'react-native-reanimated';
-
-const props = useAnimatedProps(() => ({ cx: x.value }), null, SVGAdapter);
+const animatedProps = useAnimatedProps(() => ({
+  cx: x.value,
+  r: radius.value,
+}));
 ```
 
-Custom color properties require manual `processColor()` wrapping. Define adapters outside the component body to avoid recalculation.
+Custom color properties require manual `processColor()` wrapping inside the callback.
 
 ### [useDerivedValue](https://docs.swmansion.com/react-native-reanimated/docs/core/useDerivedValue)
 
