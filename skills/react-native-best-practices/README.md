@@ -8,7 +8,7 @@ Add this skill to give your AI coding agent accurate, current guidance for Softw
 
 | Sub-skill | Covers | Status |
 |-----------|--------|--------|
-| [Animations](./references/animations/) | Reanimated 4, CSS transitions, CSS animations, shared values, GPU shader animations (WebGPU, TypeGPU), layout animations, scroll-driven animations, SVG animations, 120fps, performance flags | Complete |
+| [Animations](./references/animations/) | Reanimated 4, CSS transitions, CSS animations, shared values, canvas animations (Skia), GPU shader animations (WebGPU, TypeGPU), layout animations, scroll-driven animations, SVG animations, 120fps, performance flags | Complete |
 | [Gestures](./references/gestures/) | Gesture Handler: tap, pan, pinch, rotation, fling, hover, long press, Pressable, RectButton, Swipeable, DrawerLayout, gesture composition, testing | Complete |
 | [SVG](./references/svg/) | React Native SVG: when to use vs expo-image/Skia/Lottie/Rive/fonts/WebView, installation, loading (URI/XML/file), touch events, filters, FilterImage, performance pitfalls, iOS memory leaks | Complete |
 | [On-device AI](./references/on-device-ai/) | React Native ExecuTorch: LLMs (chat, tool calling, structured output), computer vision (classification, object detection, OCR, segmentation, style transfer, embeddings, text-to-image), speech (STT, TTS, VAD), VisionCamera real-time frame processing, model loading, resource management, error handling, custom models | Complete |
@@ -29,6 +29,7 @@ react-native-best-practices/
     │   ├── animation-functions.md        # Core hooks, withSpring, withTiming, withDecay, composition
     │   ├── layout-animations.md          # Entering/exiting, transitions, keyframes
     │   ├── scroll-and-events.md          # Scroll-driven animations, useAnimatedReaction, useFrameCallback
+    │   ├── canvas-animations.md           # Skia canvas animations, Atlas, path morphing, SKSL shaders
     │   ├── gpu-animations.md             # Shader animations, react-native-wgpu, TypeGPU, particles
     │   ├── svg-animations.md              # Animating SVG elements and paths with Reanimated
     │   └── animations-performance.md     # 120fps, feature flags, simultaneous animation limits

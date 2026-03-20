@@ -16,12 +16,13 @@ npm install react-native-wgpu
 ## When to Use GPU Shaders
 
 GPU shaders are the right choice when:
-- Hundreds or thousands of elements animate independently (Reanimated practical limit: ~500 on iOS, ~100 on low-end Android)
 - The effect requires per-pixel computation (noise fields, distortion, blur, glow)
 - Physics simulations drive the animation (fluid, cloth, boids flocking, gravity)
 - You need signed distance function (SDF) rendering for procedural shapes
 - 3D rendering is required (meshes, lighting, skeletal animation via Three.js)
 - Animation state is computed from math that benefits from GPU parallelism
+
+For high element counts without per-pixel computation (hundreds of 2D shapes, sprites, tiles), prefer `react-native-skia` with the Atlas API instead (see `canvas-animations.md`). Skia renders to a single canvas with lower setup cost than WebGPU.
 
 Stick with Reanimated when animating standard UI components (opacity, transforms, layout changes) or responding to gestures. GPU shaders render into a `Canvas` element, separate from the React Native view hierarchy.
 

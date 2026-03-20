@@ -44,7 +44,7 @@ Production patterns for React Native apps on the New Architecture, covering:
 
 | Topic | What it covers |
 |-------|---------------|
-| **Animations** | CSS transitions, CSS animations, shared value animations, GPU shader animations, layout animations, Reanimated 4, 120fps, performance tuning |
+| **Animations** | CSS transitions, CSS animations, shared value animations, canvas animations (Skia), GPU shader animations, layout animations, Reanimated 4, 120fps, performance tuning |
 | **Gestures** | Tap, pan, pinch, swipe, long press, drag with Gesture Handler |
 | **SVG** | Vector graphics, icons, charts, illustrations with React Native SVG |
 | **On-device AI** | LLMs, computer vision, OCR, audio processing, embeddings with React Native ExecuTorch |
@@ -59,9 +59,7 @@ Best practices for using Radon IDE's MCP tools when developing, debugging, and i
 ## Repository Structure
 
 ```
-skills/
-├── .claude-plugin/
-│   └── marketplace.json
+react-native-skills/
 └── skills/
     ├── radon-mcp/
     │   ├── references/
@@ -81,6 +79,7 @@ skills/
         │   │   ├── animation-functions.md
         │   │   ├── animations-performance.md
         │   │   ├── animations.md
+        │   │   ├── canvas-animations.md
         │   │   ├── gpu-animations.md
         │   │   ├── layout-animations.md
         │   │   ├── scroll-and-events.md

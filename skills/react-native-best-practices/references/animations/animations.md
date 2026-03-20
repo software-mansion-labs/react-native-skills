@@ -5,6 +5,7 @@ Production-quality animation patterns for React Native apps using Reanimated 4 o
 For animation function APIs and core hooks, see **`animation-functions.md`**.
 For entering/exiting and layout transition animations, see **`layout-animations.md`**.
 For scroll-driven animations and event-based patterns, see **`scroll-and-events.md`**.
+For canvas animations with Skia (high element counts, sprites, path morphing), see **`canvas-animations.md`**.
 For GPU shader animations (particles, noise, SDF, physics, 3D), see **`gpu-animations.md`**.
 For performance tuning and feature flags, see **`animations-performance.md`**.
 
@@ -15,24 +16,25 @@ For performance tuning and feature flags, see **`animations-performance.md`**.
 Pick the animation type based on what drives the animation and what it needs to compute.
 
 ```
-Does the effect require GPU-level computation?
-(Particle systems, fluid/physics sims, procedural noise, SDF shapes, 3D scenes,
- or more simultaneously animated elements than Reanimated can handle)
+Does the effect require per-pixel GPU computation?
+(Particle systems, fluid/physics sims, procedural noise, SDF shapes, 3D scenes)
 ├── YES → Use GPU Shaders (react-native-wgpu + TypeGPU)   → see gpu-animations.md
-└── NO  → Is the animation driven by a state change (not a gesture or continuous input)?
-    ├── YES → Can it be expressed as a simple A→B property transition?
-    │   ├── YES → Use CSS Transition (transitionProperty)
-    │   └── NO  → Does it need a defined keyframe sequence?
-    │       ├── YES → Use CSS Animation (animationName + keyframes)
-    │       └── NO  → Use CSS Transition with multiple properties
-    └── NO  → Is it gesture-driven, or does it need math / trig / layout reads?
-        ├── Simple feedback (press/release, toggle)?
-        │   └── YES → Use CSS Transition + Pressable + React state
-        └── Continuous tracking, math, or layout reads?
-            └── YES → Use Shared Value Animation (useSharedValue + useAnimatedStyle)
+└── NO  → Does it animate more than ~100 elements (low-end Android) or ~500 (iOS)?
+    ├── YES → Use Reanimated + react-native-skia           → see canvas-animations.md
+    └── NO  → Is the animation driven by a state change (not a gesture or continuous input)?
+        ├── YES → Can it be expressed as a simple A→B property transition?
+        │   ├── YES → Use CSS Transition (transitionProperty)
+        │   └── NO  → Does it need a defined keyframe sequence?
+        │       ├── YES → Use CSS Animation (animationName + keyframes)
+        │       └── NO  → Use CSS Transition with multiple properties
+        └── NO  → Is it gesture-driven, or does it need math / trig / layout reads?
+            ├── Simple feedback (press/release, toggle)?
+            │   └── YES → Use CSS Transition + Pressable + React state
+            └── Continuous tracking, math, or layout reads?
+                └── YES → Use Shared Value Animation (useSharedValue + useAnimatedStyle)
 ```
 
-Default to CSS transitions and CSS animations. They are declarative, easier to read, and remove the overhead of worklet execution. This includes simple gesture feedback like button presses: use CSS transitions with `Pressable` + React state instead of shared values to avoid worklets and thread bridging. Reach for shared values when the animation requires continuous tracking (pan, pinch, scroll), per-frame math, or layout reads. Reach for GPU shaders when the animation involves per-pixel computation, hundreds/thousands of independently animated elements, physics simulations, or 3D rendering that operates outside the React Native view hierarchy.
+Default to CSS transitions and CSS animations. They are declarative, easier to read, and remove the overhead of worklet execution. This includes simple gesture feedback like button presses: use CSS transitions with `Pressable` + React state instead of shared values to avoid worklets and thread bridging. Reach for shared values when the animation requires continuous tracking (pan, pinch, scroll), per-frame math, or layout reads. When the scene animates more than ~100 elements on low-end Android or ~500 on iOS, switch to Reanimated + `react-native-skia`, which renders to a single canvas and avoids per-view overhead. Reach for GPU shaders (`react-native-wgpu` + TypeGPU) when the animation involves per-pixel computation, physics simulations, or 3D rendering that operates outside the React Native view hierarchy.
 
 ---
 
