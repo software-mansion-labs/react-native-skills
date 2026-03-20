@@ -80,6 +80,7 @@ react-native-skills/
         │   │   ├── animations-performance.md
         │   │   ├── animations.md
         │   │   ├── canvas-animations.md
+        │   │   ├── canvas-atlas.md
         │   │   ├── gpu-animations.md
         │   │   ├── layout-animations.md
         │   │   ├── scroll-and-events.md

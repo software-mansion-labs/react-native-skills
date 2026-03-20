@@ -29,7 +29,8 @@ react-native-best-practices/
     │   ├── animation-functions.md        # Core hooks, withSpring, withTiming, withDecay, composition
     │   ├── layout-animations.md          # Entering/exiting, transitions, keyframes
     │   ├── scroll-and-events.md          # Scroll-driven animations, useAnimatedReaction, useFrameCallback
-    │   ├── canvas-animations.md           # Skia canvas animations, Atlas, path morphing, SKSL shaders
+    │   ├── canvas-animations.md           # Skia canvas animations, path morphing, SKSL shaders, gesture integration
+    │   ├── canvas-atlas.md                # Atlas batched sprite/tile animation, useTexture, useRSXformBuffer, RSXform
     │   ├── gpu-animations.md             # Shader animations, react-native-wgpu, TypeGPU, particles
     │   ├── svg-animations.md              # Animating SVG elements and paths with Reanimated
     │   └── animations-performance.md     # 120fps, feature flags, simultaneous animation limits
