@@ -2,7 +2,7 @@
 
 Production-ready patterns for React Native development, packaged as a [Claude Code plugin](https://code.claude.com/docs/en/plugins#create-plugins). Maintained by [Software Mansion](https://swmansion.com/).
 
-Install the plugin and your AI coding agent gets up-to-date guidance for animations, gestures, on-device AI, audio, and other React Native features.
+Optimized for Claude Opus 4.6 and tested with [Claude Code](https://claude.ai/code). Install the plugin and your AI coding agent gets up-to-date guidance for animations, gestures, on-device AI, audio, and other React Native features.
 
 ## Installation
 
@@ -13,26 +13,19 @@ Add the Software Mansion marketplace and install the plugin:
 ```
 /plugin marketplace add software-mansion-labs/skills
 /plugin install skills@swmansion
+/reload-plugins
 ```
 
 The skills are available immediately. Run `/plugin marketplace update swmansion` to get the latest version.
 
-### As standalone skills
+### Via `npx`
 
-Alternatively, copy or symlink skill directories into one of these locations:
-
-| Scope | Path | When to use |
-|-------|------|-------------|
-| Personal | `~/.claude/skills/<skill-name>/` | All your projects |
-| Project | `.claude/skills/<skill-name>/` | Current project only |
+You can also install the skills using the [`skills` CLI](https://www.npmjs.com/package/skills):
 
 ```bash
-git clone https://github.com/software-mansion-labs/skills.git
-ln -s "$(pwd)/skills/skills/react-native-best-practices" ~/.claude/skills/react-native-best-practices
-ln -s "$(pwd)/skills/skills/radon-mcp" ~/.claude/skills/radon-mcp
+npx skills add software-mansion-labs/skills
 ```
 
-Once installed, the skills are automatically available in your next Claude Code session.
 
 ## Available Skills
 
