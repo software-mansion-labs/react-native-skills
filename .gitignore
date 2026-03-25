@@ -1,2 +1,10 @@
 .claude
 .DS_Store
+docs
+lint/skill-lint
+scripts
+skill-tester
+evals/results
+evals/skill-eval
+.task
+react-native-best-practices-workspace

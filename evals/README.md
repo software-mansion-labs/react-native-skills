@@ -49,15 +49,26 @@ Add evals to `evals.json` under the appropriate skill's `evals` array. Each eval
 |-------|----------|-------------|
 | `id` | yes | Numeric identifier matching the skill-creator `eval-N` directory name |
 | `prompt` | yes | Human-readable description of the eval task |
+| `should_trigger` | no | Whether this prompt should trigger the skill (defaults to `true`) |
 | `expected_output` | no | Human-readable description of what a good response looks like |
 | `assertions` | no | Array of machine-checkable assertions for static grading |
 
-### Example eval
+### Triggering evals
+
+Each eval can specify `should_trigger` to indicate whether the prompt should cause the skill to activate. This lets you test both positive cases (prompts the skill should handle) and negative cases (prompts unrelated to the skill).
+
+- `should_trigger: true` (default) -- the prompt is relevant to the skill. Assertions are graded normally.
+- `should_trigger: false` -- the prompt should NOT trigger the skill. Assertion grading is skipped for these evals. They serve as negative test cases to verify the skill description doesn't over-trigger.
+
+The grader reports triggering stats separately from assertion pass rates.
+
+### Example: should-trigger eval
 
 ```json
 {
   "id": 0,
   "prompt": "Implement a spinner loader animation that rotates continuously.",
+  "should_trigger": true,
   "expected_output": "Should use CSS Animations API, not the shared value API",
   "assertions": [
     {
@@ -71,6 +82,17 @@ Add evals to `evals.json` under the appropriate skill's `evals` array. Each eval
       "text": "Does not use shared value API"
     }
   ]
+}
+```
+
+### Example: should-not-trigger eval
+
+```json
+{
+  "id": 2,
+  "prompt": "Write a Python script that reads a CSV and outputs the top 10 rows sorted by revenue.",
+  "should_trigger": false,
+  "expected_output": "Generic Python task, no React Native involved."
 }
 ```
 

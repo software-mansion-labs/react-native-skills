@@ -15,10 +15,19 @@ type SkillEvals struct {
 
 // Eval is a single test case.
 type Eval struct {
-	ID         int         `json:"id"`
-	Prompt     string      `json:"prompt"`
-	Expected   string      `json:"expected_output,omitempty"`
-	Assertions []Assertion `json:"assertions,omitempty"`
+	ID            int         `json:"id"`
+	Prompt        string      `json:"prompt"`
+	ShouldTrigger *bool       `json:"should_trigger,omitempty"`
+	Expected      string      `json:"expected_output,omitempty"`
+	Assertions    []Assertion `json:"assertions,omitempty"`
+}
+
+// ShouldTriggerVal returns the effective should_trigger value (defaults to true).
+func (e Eval) ShouldTriggerVal() bool {
+	if e.ShouldTrigger == nil {
+		return true
+	}
+	return *e.ShouldTrigger
 }
 
 // Assertion is a machine-checkable condition on the eval output.
@@ -43,9 +52,17 @@ type GradingGroup struct {
 	PassRate        float64 `json:"pass_rate"`
 }
 
+// TriggerGroup holds triggering stats for a set of evals.
+type TriggerGroup struct {
+	ShouldTrigger    int `json:"should_trigger"`
+	ShouldNotTrigger int `json:"should_not_trigger"`
+	Total            int `json:"total"`
+}
+
 // GradingSummary aggregates grading results across a workspace.
 type GradingSummary struct {
 	WithSkill    GradingGroup `json:"with_skill"`
 	WithoutSkill GradingGroup `json:"without_skill"`
+	Triggering   TriggerGroup `json:"triggering"`
 	Timestamp    string       `json:"timestamp"`
 }

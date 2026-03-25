@@ -46,6 +46,27 @@ func gradeWorkspace(workspacePath string, suite *EvalSuite) {
 
 	// Build assertion lookup: eval ID -> assertions.
 	assertionMap := buildAssertionMap(suite)
+	triggerMap := buildTriggerMap(suite)
+
+	// Print triggering overview.
+	var triggerGroup TriggerGroup
+	evalDirs := findEvalDirs(iterDir)
+	fmt.Printf("\n  --- TRIGGERING ---\n\n")
+	for _, evalDir := range evalDirs {
+		evalID := extractEvalID(filepath.Base(evalDir))
+		shouldTrigger, known := triggerMap[evalID]
+		if !known {
+			continue
+		}
+		triggerGroup.Total++
+		if shouldTrigger {
+			triggerGroup.ShouldTrigger++
+			fmt.Printf("  [TRIGGER]     eval-%d: should trigger\n", evalID)
+		} else {
+			triggerGroup.ShouldNotTrigger++
+			fmt.Printf("  [NO TRIGGER]  eval-%d: should NOT trigger\n", evalID)
+		}
+	}
 
 	var withSkill, withoutSkill GradingGroup
 	configs := []struct {
@@ -58,11 +79,16 @@ func gradeWorkspace(workspacePath string, suite *EvalSuite) {
 	}
 
 	for _, cfg := range configs {
-		fmt.Printf("\n  --- %s ---\n\n", cfg.label)
+		fmt.Printf("\n  --- %s (assertions) ---\n\n", cfg.label)
 
-		evalDirs := findEvalDirs(iterDir)
 		for _, evalDir := range evalDirs {
 			evalID := extractEvalID(filepath.Base(evalDir))
+
+			// Skip assertion grading for evals that should not trigger.
+			if shouldTrigger, ok := triggerMap[evalID]; ok && !shouldTrigger {
+				continue
+			}
+
 			assertions, ok := assertionMap[evalID]
 			if !ok || len(assertions) == 0 {
 				continue
@@ -111,6 +137,9 @@ func gradeWorkspace(workspacePath string, suite *EvalSuite) {
 
 	fmt.Println()
 	fmt.Println("============================================")
+	fmt.Printf("  Triggering:    %d should-trigger, %d should-not-trigger (%d total)\n",
+		triggerGroup.ShouldTrigger, triggerGroup.ShouldNotTrigger, triggerGroup.Total)
+	fmt.Println("  ---")
 	fmt.Printf("  With skill:    %d/%d passed (%.1f%%)\n", withSkill.Passed, withSkill.TotalAssertions, withSkill.PassRate)
 	fmt.Printf("  Without skill: %d/%d passed (%.1f%%)\n", withoutSkill.Passed, withoutSkill.TotalAssertions, withoutSkill.PassRate)
 	diff := withSkill.PassRate - withoutSkill.PassRate
@@ -126,6 +155,7 @@ func gradeWorkspace(workspacePath string, suite *EvalSuite) {
 	summary := GradingSummary{
 		WithSkill:    withSkill,
 		WithoutSkill: withoutSkill,
+		Triggering:   triggerGroup,
 		Timestamp:    time.Now().UTC().Format(time.RFC3339),
 	}
 	summaryBytes, _ := json.MarshalIndent(summary, "", "  ")
@@ -219,6 +249,19 @@ func buildAssertionMap(suite *EvalSuite) map[int][]Assertion {
 				// Also map by 0-based index for skill-creator compatibility.
 				m[i] = eval.Assertions
 			}
+		}
+	}
+	return m
+}
+
+// buildTriggerMap creates a map from eval ID to should_trigger value.
+func buildTriggerMap(suite *EvalSuite) map[int]bool {
+	m := make(map[int]bool)
+	for _, skill := range suite.Skills {
+		for i, eval := range skill.Evals {
+			trigger := eval.ShouldTriggerVal()
+			m[eval.ID] = trigger
+			m[i] = trigger
 		}
 	}
 	return m

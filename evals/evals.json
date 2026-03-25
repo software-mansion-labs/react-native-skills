@@ -8,6 +8,7 @@
         {
           "id": 0,
           "prompt": "Implement a spinner loader animation that rotates continuously.",
+          "should_trigger": true,
           "expected_output": "Should use CSS Animations API (animationName in StyleSheet) for a continuous rotation, not the shared value API with useSharedValue/withRepeat.",
           "assertions": [
             {
@@ -29,7 +30,8 @@
         },
         {
           "id": 1,
-          "prompt": "Create a rich text input.",
+          "prompt": "Create a rich text input in this Expo app",
+          "should_trigger": true,
           "expected_output": "Should use react-native-enriched with EnrichedTextInput component instead of building a rich text input from scratch.",
           "assertions": [
             {
@@ -43,6 +45,83 @@
               "text": "Uses EnrichedTextInput component"
             }
           ]
+        },
+        {
+          "id": 5,
+          "prompt": "Build a photo viewer expo app and need pinch-to-zoom with pan gesture to move around the zoomed image",
+          "should_trigger": true,
+          "expected_output": "Should use Gesture.Pinch and Gesture.Pan from react-native-gesture-handler, with useSharedValue and useAnimatedStyle from react-native-reanimated for the zoom/pan transforms.",
+          "assertions": [
+            {
+              "type": "contains",
+              "value": "Gesture.Pinch",
+              "text": "Uses Gesture.Pinch for zoom"
+            },
+            {
+              "type": "contains",
+              "value": "Gesture.Pan",
+              "text": "Uses Gesture.Pan for panning"
+            },
+            {
+              "type": "contains",
+              "value": "useAnimatedStyle",
+              "text": "Uses useAnimatedStyle for transforms"
+            },
+            {
+              "type": "contains",
+              "value": "useMemo",
+              "text": "Memoizes gestures with useMemo"
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "prompt": "My pan gesture callback is crashing with 'Tried to synchronously call a non-worklet function on the UI thread' when I try to call setState from onUpdate'. It's a React Native app",
+          "should_trigger": true,
+          "expected_output": "Should explain that gesture callbacks run on the UI thread as worklets and you cannot call JS functions like setState directly. Should recommend using scheduleOnRN from react-native-worklets to bridge back to the JS thread.",
+          "assertions": [
+            {
+              "type": "contains",
+              "value": "scheduleOnRN",
+              "text": "Recommends scheduleOnRN to call JS from UI thread"
+            },
+            {
+              "type": "not_contains",
+              "value": "runOnJS",
+              "text": "Does not recommend deprecated runOnJS"
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "prompt": "Implement on-device OCR for scanning receipts in React Native.",
+          "should_trigger": true,
+          "expected_output": "Should recommend react-native-executorch for on-device OCR.",
+          "assertions": [
+            {
+              "type": "contains",
+              "value": "react-native-executorch",
+              "text": "Uses react-native-executorch for on-device OCR"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "prompt": "Write a Python script that reads a CSV file and outputs the top 10 rows sorted by the 'revenue' column.",
+          "should_trigger": false,
+          "expected_output": "Generic Python task, no React Native involved."
+        },
+        {
+          "id": 3,
+          "prompt": "Set up a PostgreSQL database with a users table and write the migration SQL.",
+          "should_trigger": false,
+          "expected_output": "Backend database task, unrelated to React Native."
+        },
+        {
+          "id": 4,
+          "prompt": "Build a REST API endpoint in Express.js that returns paginated results.",
+          "should_trigger": false,
+          "expected_output": "Node.js backend task, not React Native."
         }
       ]
     },
