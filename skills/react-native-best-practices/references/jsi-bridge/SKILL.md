@@ -20,3 +20,6 @@ Load at most one reference file per question. Prefer the most specific match.
 | `calling-js-and-async.md` | Installing `HostFunction` bindings, calling JS functions from C++, `callWithThis`, `callAsConstructor` (JS Set / Map / Promise), `invokeAsync` + `CallInvoker`, Promise resolve/reject patterns, `JSIException` hierarchy |
 | `performance.md` | Batching sequential calls, caching `PropNameID`, zero-copy `ArrayBuffer` via `MutableBuffer`, `setExternalMemoryPressure`, `Scope` in tight loops, avoiding `evaluateJavaScript` for function calls |
 | `setup-and-templates.md` | Installing a JSI binding in Android (FBJNI, JSIModulePackage) and iOS (ObjC++ `.mm`), library scaffolding templates, JSI vs TurboModules vs Nitro Modules |
+| `module-approaches.md` | Choosing between Pure JSI, TurboModules, Nitro Modules, or a pure C++ core with thin adapter — decision tree, trade-offs, boilerplate comparison |
+| `cpp-memory-patterns.md` | C++ memory for JS developers: `unique_ptr`, `shared_ptr`, `std::move`, lambda captures, RAII, circular ownership, the GC boundary between JS heap and native heap |
+| `debugging-and-pitfalls.md` | Crash traces, symbolication (`c++filt`, `addr2line`, `atos`, `ndk-stack`), ASan, common JSI crash patterns, pre-ship checklist |

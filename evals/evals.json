@@ -646,6 +646,222 @@
               "text": "Explains it is a GC hint"
             }
           ]
+        },
+        {
+          "id": 126,
+          "prompt": "My React Native app is crashing with signal 11, fault address 0x7b1a4fe000. The crashing thread is called `AudioEncoder`. Another thread in the trace is `mqt_js` and I can see frames like `Hades::collectOG` and `HostObject::~HostObject` in it. What is going on and how do I fix it?",
+          "should_trigger": true,
+          "expected_output": "Should explain this is a use-after-free crash: the JS GC (Hades) collected the HostObject and destroyed its owned resources (native buffer), while the background AudioEncoder thread still held a raw pointer to those resources and wrote into freed memory. Should recommend either co-owning the resource via shared_ptr (background thread keeps its own shared_ptr to the buffer), or joining the background thread in the HostObject destructor before members are destroyed.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["use-after-free", "use after free", "GC", "garbage collect", "freed", "destructor"],
+              "text": "Identifies use-after-free / GC finalization cause"
+            },
+            {
+              "type": "contains_any",
+              "values": ["shared_ptr", "join", "co-own"],
+              "text": "Recommends shared_ptr co-ownership or join() fix"
+            }
+          ]
+        },
+        {
+          "id": 127,
+          "prompt": "I have a native Android crash and the tombstone shows hex offsets like `pc 0x000018f30  libaudio.so`. How do I get actual file names and line numbers from these offsets during development?",
+          "should_trigger": true,
+          "expected_output": "Should explain that ndk-stack is the fastest first step — pipe logcat output through ndk-stack pointing at the symbol directory and it rewrites every frame with file and line numbers automatically. Should also mention llvm-addr2line for individual offsets, and c++filt for demangling C++ symbols.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["ndk-stack", "llvm-addr2line", "addr2line"],
+              "text": "Mentions ndk-stack or addr2line for Android symbolication"
+            },
+            {
+              "type": "contains_any",
+              "values": ["c++filt", "demangle", "symbol"],
+              "text": "Mentions demangling or symbol lookup"
+            }
+          ]
+        },
+        {
+          "id": 128,
+          "prompt": "I keep getting cryptic SIGSEGV crashes in my JSI audio module that are hard to reproduce. The crashes appear at random call sites like memcpy and don't point to my code. How can I get better diagnostic information before the crash?",
+          "should_trigger": true,
+          "expected_output": "Should recommend Address Sanitizer (ASan). ASan instruments every allocation and deallocation at compile time and terminates immediately with a detailed report when a use-after-free or buffer overflow occurs — showing both the bad write callstack and the earlier free callstack. Should show how to enable it via CMakeLists.txt (-fsanitize=address) for Android or via Xcode Scheme diagnostics for iOS.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["AddressSanitizer", "ASan", "address sanitizer"],
+              "text": "Recommends Address Sanitizer"
+            },
+            {
+              "type": "contains_any",
+              "values": ["-fsanitize=address", "CMakeLists", "Xcode", "Diagnostics"],
+              "text": "Shows how to enable ASan"
+            }
+          ]
+        },
+        {
+          "id": 129,
+          "prompt": "In my JSI HostObject I return functions from the `get` method. One of those functions captures `this` in a lambda. Is this safe?",
+          "should_trigger": true,
+          "expected_output": "Should explain that capturing raw `this` is unsafe: JavaScript can extract the function, drop the HostObject, wait for GC collection, and then call the extracted function — at which point `this` is a dangling pointer to freed memory. Should recommend weak_from_this() (with std::enable_shared_from_this inheritance), calling .lock() inside the lambda to safely upgrade to shared_ptr.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["unsafe", "dangling", "use-after-free", "dangle"],
+              "text": "Identifies raw this as unsafe/dangling"
+            },
+            {
+              "type": "contains_any",
+              "values": ["weak_from_this", "enable_shared_from_this", "weak_ptr"],
+              "text": "Recommends weak_from_this or weak_ptr"
+            }
+          ]
+        },
+        {
+          "id": 130,
+          "prompt": "I have two C++ HostObjects — a Parent that holds a shared_ptr to a Child, and the Child holds a shared_ptr back to the Parent. JavaScript dropped both objects but the native memory never gets freed. Why not and how do I fix it?",
+          "should_trigger": true,
+          "expected_output": "Should explain that shared_ptr cannot break reference cycles — both objects' refcounts stay at 1 because they point to each other, even after all external references are dropped. Should recommend breaking the cycle with weak_ptr: the back reference (Child → Parent) should be a weak_ptr, which does not increment the refcount. The owning direction (Parent → Child) stays shared_ptr.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["cycle", "circular", "reference cycle"],
+              "text": "Identifies reference cycle as the cause"
+            },
+            {
+              "type": "contains",
+              "value": "weak_ptr",
+              "text": "Recommends weak_ptr to break the cycle"
+            }
+          ]
+        },
+        {
+          "id": 131,
+          "prompt": "I'm writing a JSI install() function that registers a HostFunction. Inside the lambda I capture `db` by reference — `[&db]`. The function is installed on rt.global() and called later from JavaScript. Is this correct?",
+          "should_trigger": true,
+          "expected_output": "Should explain that capturing by reference [&db] is incorrect here because db is a local variable that is destroyed when install() returns. The lambda outlives install(), so [&db] is a dangling reference — any JS call to the function after install() returns will access freed stack memory. Should show the correct fix: capture by value [db] (where db is a shared_ptr) to copy the pointer and keep the Database alive.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["dangling", "undefined behavior", "local variable", "stack", "destroyed when"],
+              "text": "Explains [&db] is a dangling reference"
+            },
+            {
+              "type": "contains_any",
+              "values": ["[db]", "capture by value", "shared_ptr"],
+              "text": "Shows correct capture-by-value fix"
+            }
+          ]
+        },
+        {
+          "id": 132,
+          "prompt": "I'm confused about who frees memory in a JSI module. I create a HostObject with make_shared and install it on rt.global(). After my install() function returns, the local shared_ptr goes out of scope. Does the HostObject get freed immediately?",
+          "should_trigger": true,
+          "expected_output": "Should explain the two-heap boundary: when createFromHostObject is called, the runtime takes its own copy of the shared_ptr, bringing the refcount to 2. When the local variable in install() goes out of scope, the refcount drops to 1 — but the object survives because the runtime still holds a reference. The object is freed only when JavaScript GC collects all JS references to it and the runtime releases its shared_ptr, bringing the refcount to 0.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["refcount", "reference count", "count drops", "runtime holds"],
+              "text": "Explains shared_ptr refcount keeps the object alive"
+            },
+            {
+              "type": "contains_any",
+              "values": ["GC", "garbage collect", "JS drops", "runtime releases"],
+              "text": "Explains GC triggers final destruction"
+            }
+          ]
+        },
+        {
+          "id": 133,
+          "prompt": "I need to expose a key-value store from C++ to JavaScript where JS code can do `store.get('anyKey')` and `store.set('anyKey', value)` with arbitrary string keys. Should I use a TurboModule or a Pure JSI HostObject?",
+          "should_trigger": true,
+          "expected_output": "Should recommend Pure JSI HostObject. TurboModules only support flat named methods — there is no way to intercept arbitrary property access in a TurboModule. HostObject's get/set/getPropertyNames methods are designed for exactly this dynamic dispatch pattern.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["HostObject", "Pure JSI", "pure JSI"],
+              "text": "Recommends Pure JSI HostObject"
+            },
+            {
+              "type": "contains_any",
+              "values": ["dynamic", "arbitrary", "flat methods", "TurboModule cannot", "not supported"],
+              "text": "Explains TurboModules lack dynamic property dispatch"
+            }
+          ]
+        },
+        {
+          "id": 134,
+          "prompt": "I'm building a C++ signal processing library that will run in React Native but also needs to be unit-tested without any React Native infrastructure, and potentially shipped on other platforms. How should I structure the C++ to make this possible?",
+          "should_trigger": true,
+          "expected_output": "Should recommend the Pure C++ core + thin JSI adapter pattern: keep the signal processing library completely free of JSI dependencies (no #include <jsi/jsi.h>), so it can be compiled and tested with gtest or Catch2 in isolation. Write a minimal adapter that only contains JSI-specific code and delegates to the core. This way the core is portable across platforms and environments.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["pure C++", "Pure C++", "thin adapter", "no JSI dependency", "no #include"],
+              "text": "Recommends pure C++ core with no JSI dependency"
+            },
+            {
+              "type": "contains_any",
+              "values": ["gtest", "Catch2", "unit test", "plain C++"],
+              "text": "Explains testability without RN infrastructure"
+            }
+          ]
+        },
+        {
+          "id": 135,
+          "prompt": "What is the advantage of TurboModules over writing a pure JSI binding when it comes to type safety?",
+          "should_trigger": true,
+          "expected_output": "Should explain that TurboModules use codegen: you write a TypeScript spec, and the build system generates an abstract C++ class with typed method signatures. Implementing the class means the compiler enforces that all methods are present and that argument types match. With pure JSI you receive const jsi::Value* and must manually check isNumber(), isString() etc. — missing a check silently crashes at runtime.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["codegen", "TypeScript spec", "spec"],
+              "text": "Explains codegen from TypeScript spec"
+            },
+            {
+              "type": "contains_any",
+              "values": ["compile-time", "compiler", "abstract class", "generated"],
+              "text": "Explains compile-time type enforcement"
+            }
+          ]
+        },
+        {
+          "id": 136,
+          "prompt": "Why does my React Native app's JS thread freeze when my JSI binding runs a long synchronous computation? I thought JSI was fast.",
+          "should_trigger": true,
+          "expected_output": "Should explain that JSI bindings execute synchronously on the JS thread (mqt_js). React Native has a 3-thread model: JS thread, UI/main thread, and native background threads. While the JS thread runs your C++ computation, it cannot process any other JS work, frame updates, or touch events. Long synchronous JSI calls block the entire JS event queue and cause dropped frames or frozen UI. Should recommend offloading heavy work to a background thread and using CallInvoker::invokeAsync to return results to JS.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["JS thread", "mqt_js", "synchronous", "event queue", "blocks"],
+              "text": "Explains JSI runs synchronously on the JS thread"
+            },
+            {
+              "type": "contains_any",
+              "values": ["background thread", "invokeAsync", "offload"],
+              "text": "Recommends background thread with invokeAsync"
+            }
+          ]
+        },
+        {
+          "id": 137,
+          "prompt": "How do I register my JSI binding on Android so that it is installed into the JavaScript runtime when the app starts?",
+          "should_trigger": true,
+          "expected_output": "Should explain the Android registration path: implement JSIModulePackage (or use the FBJNI-based approach), override getJSIModules() to return a list of JSIModuleSpec entries, and register the package with the ReactInstanceManager. Each JSIModuleSpec entry holds a factory lambda that receives the Runtime and CallInvoker and calls your install() function. Should mention FBJNI (JavaClass<> and kJavaDescriptor) as the helper library for JNI interactions.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["JSIModulePackage", "getJSIModules", "ReactInstanceManager"],
+              "text": "Mentions JSIModulePackage registration"
+            },
+            {
+              "type": "contains_any",
+              "values": ["FBJNI", "JNI", "install("],
+              "text": "Mentions JNI/FBJNI or install function"
+            }
+          ]
         }
       ]
     }

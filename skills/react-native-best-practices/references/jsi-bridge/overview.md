@@ -4,6 +4,22 @@ JSI (JavaScript Interface) is a C++ header-only API that provides a language-agn
 
 ---
 
+## React Native's Three-Thread Model
+
+React Native runs across three execution domains. Understanding which thread a crash frame belongs to is the first step in any debugging session.
+
+| Thread | Name in crash traces | What runs there |
+|---|---|---|
+| **JS Thread** | `mqt_js` | Hermes engine, all JS/TS code, JSI calls |
+| **UI / Main Thread** | `main` | Native view rendering, layout, touch hit-testing (UIKit on iOS, View system on Android) |
+| **Native Background** | varies (`AudioEncoder`, `RNBGThread`, etc.) | File I/O, network, audio, any heavy native work dispatched from a native module |
+
+These domains **do not share mutable state**. In the old architecture they communicated exclusively via serialized messages. The New Architecture adds shared immutable C++ data structures (the Fabric shadow tree) and the direct JSI call path, but the fundamental isolation still holds: you cannot safely access one thread's mutable state from another.
+
+`mqt_js` stands for "message queue thread, JavaScript" — React Native's internal name for the thread that runs the Hermes runtime. If you see `mqt_js` in a crash trace, the crash (or the concurrent activity) is happening inside the JS engine.
+
+---
+
 ## Where JSI Sits
 
 ```
@@ -20,6 +36,36 @@ JS Engine (Hermes / V8 / JSC)
 ```
 
 `jsi::Runtime` is the entry point. Every JSI operation goes through a `Runtime&` reference. The concrete implementation (Hermes, V8, JSC) is behind the abstraction — your binding code is engine-agnostic.
+
+---
+
+## Hermes: Default Engine Since RN 0.70
+
+Hermes is the JavaScript engine behind `jsi::Runtime` in all modern React Native apps. It became the default in RN 0.70 and is the only supported engine in the New Architecture.
+
+**Ahead-of-time bytecode compilation.** Unlike V8 (which parses source at runtime and JIT-compiles hot paths through Ignition → Sparkplug → TurboFan), Hermes compiles JavaScript to bytecode at **build time** via the `hermesc` compiler. The sequence:
+
+1. Metro bundles your JS into a single bundle.
+2. `hermesc` compiles that bundle to Hermes bytecode (`.hbc`).
+3. The app ships the bytecode. On launch, Hermes executes it directly — no parsing, no JIT warm-up.
+
+This is why Hermes apps start faster: the most expensive part of JS engine startup is eliminated. The trade-off is no JIT: Hermes executes bytecode directly without compiling to native machine code at runtime, which lowers peak compute throughput. For UI-driven, event-based workloads this is a good trade. For compute-heavy work, the answer is native code — which is what JSI enables.
+
+---
+
+## Hades: Hermes's Concurrent Generational GC
+
+Hermes uses a garbage collector called **Hades** (Hermes Approach to Decreasing Execution Stalls).
+
+**Generational.** Objects are split into two generations:
+- *Young generation* — recently allocated objects, collected frequently and cheaply (most objects die young).
+- *Old generation* — objects that survived multiple young-gen collections, collected less often.
+
+**Mostly-concurrent.** The bulk of collection work (tracing the object graph, sweeping unreachable objects) runs on a **background thread** while JavaScript continues executing. Only specific phases — root marking and weak reference finalization — require a brief **stop-the-world (STW) pause** where the JS thread is halted.
+
+This matters for frame budgets: the old Hermes GC (GenGC) had full STW pauses that could be tens of milliseconds on large heaps. Hades reduces pause times by roughly an order of magnitude by doing most work concurrently.
+
+**In crash traces,** Hades activity appears as `facebook::hermes::vm::Hades::collectOG` (old-generation collection) on the `mqt_js` thread. Seeing this alongside a native thread crash is a signal that GC finalization ran a C++ destructor — a common source of use-after-free bugs when ownership across the JS/native boundary is not explicit.
 
 ---
 
@@ -53,6 +99,34 @@ Consequences:
 - JSI bindings are faster — no serialization, no thread hops for the call itself.
 - The JS thread can be blocked by a slow HostFunction. Don't do heavy work synchronously in a HostFunction; return a Promise and use `CallInvoker` to resolve it from a background thread.
 - `evaluateJavaScript` is also synchronous — it blocks until the script finishes.
+
+---
+
+## Blocking the JS Thread: What Goes Wrong
+
+The JS thread runs a **single event loop** — one queue, one item processed at a time. Every piece of work that touches JavaScript enters this queue: touch handlers, `setTimeout` callbacks, `fetch` responses, `Promise` resolutions, and results returned from native modules via `CallInvoker`.
+
+When a JSI HostFunction (or any synchronous JS call) takes too long, it blocks the entire queue:
+
+```cpp
+// This runs synchronously on the JS thread
+// If it takes 50 ms, nothing else runs for 50 ms
+auto fn = jsi::Function::createFromHostFunction(
+    rt, jsi::PropNameID::forAscii(rt, "slowOp"), 0,
+    [](jsi::Runtime& rt, const jsi::Value&, const jsi::Value*, size_t) {
+      expensiveComputation(); // ← blocks here
+      return jsi::Value::undefined();
+    });
+```
+
+**Consequences of a blocked JS thread:**
+
+- **Touch events are not processed.** The UI thread still runs — the app doesn't freeze visually — but JS-side touch handlers (`onPress`, gesture callbacks) queue up and fire late or are dropped.
+- **Timers don't fire on time.** `setTimeout` and `setInterval` callbacks are queued but can't execute while the thread is occupied.
+- **Animations driven from JS drop frames.** Any animation that sends a position update to the UI thread every 16 ms via JS will miss frames if the JS thread is busy. Use `useNativeDriver: true` (core Animated) or Reanimated worklets to move animations entirely to the UI thread.
+- **Promise/microtask resolution is delayed.** Microtasks drain after each JS task completes; if a task is long, downstream `await` continuations are delayed by the same amount.
+
+The practical rule: a synchronous JSI call is appropriate for work that completes in under ~1 ms (a fast lookup, a small read). Anything involving I/O, computation, or unpredictable duration belongs on a background thread, with results returned to JS via `CallInvoker` or `RuntimeExecutor`. This is covered in the threading reference.
 
 ---
 
