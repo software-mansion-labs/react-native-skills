@@ -129,6 +129,525 @@
       "skill_name": "radon-mcp",
       "skill_path": "../skills/radon-mcp",
       "evals": []
+    },
+    {
+      "skill_name": "jsi-bridge",
+      "skill_path": "../skills/react-native-best-practices/references/jsi-bridge",
+      "evals": [
+        {
+          "id": 100,
+          "prompt": "I'm writing a JSI native module and I have a line like `obj.getProperty(rt, \"onData\").asObject(rt).asFunction(rt)`. When 'onData' is missing or not a function I get a JSIException, but the message just says 'Object is not a function' with zero context about which property it was. Is there a better way to write this?",
+          "should_trigger": true,
+          "expected_output": "Should recommend getPropertyAsFunction(rt, 'onData') which produces a better error message when the property is missing or not callable. Should also explain the get vs as naming pattern.",
+          "assertions": [
+            {
+              "type": "contains",
+              "value": "getPropertyAsFunction",
+              "text": "Recommends getPropertyAsFunction for better error messages"
+            },
+            {
+              "type": "contains_any",
+              "values": ["getPropertyAsObject", "getPropertyAs"],
+              "text": "Mentions the getPropertyAs family of helpers"
+            }
+          ]
+        },
+        {
+          "id": 101,
+          "prompt": "I have a React Native native module that exposes some processing through JSI. Inside the module I spawn a std::thread for heavy work and want to call jsi::Runtime methods (read JS properties, call a callback function) from that thread when the work finishes. Is this safe?",
+          "should_trigger": true,
+          "expected_output": "Should warn that jsi::Runtime is not thread-safe — calling it from a background thread is undefined behavior. Should explain the single-thread rule and recommend using CallInvoker / invokeAsync to schedule the call back onto the JS thread.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["single thread", "not thread-safe", "single-thread", "thread-safe"],
+              "text": "Explains the single-thread constraint"
+            },
+            {
+              "type": "contains_any",
+              "values": ["invokeAsync", "CallInvoker", "callInvoker"],
+              "text": "Recommends CallInvoker / invokeAsync for cross-thread dispatch"
+            }
+          ]
+        },
+        {
+          "id": 102,
+          "prompt": "I'm trying to capture a jsi::Value in a lambda that gets stored in a std::vector and called later from a network callback. The compiler gives me 'call to deleted constructor of jsi::Value' because Value has no copy constructor. How do I pass a jsi::Value into an async callback in C++?",
+          "should_trigger": true,
+          "expected_output": "Should explain that jsi::Value is intentionally non-copyable (move-only). Should show the pattern of wrapping in std::shared_ptr<jsi::Value> (constructed with runtime + value) to share ownership across callbacks.",
+          "assertions": [
+            {
+              "type": "contains",
+              "value": "shared_ptr",
+              "text": "Shows shared_ptr pattern for Value ownership"
+            },
+            {
+              "type": "contains_any",
+              "values": ["non-copyable", "move-only", "not copyable", "no copy"],
+              "text": "Explains Value is non-copyable"
+            }
+          ]
+        },
+        {
+          "id": 103,
+          "prompt": "My jsi::HostObject's destructor does some cleanup by calling `jsi::Value result = runtime_.call(...)` to notify the JS side that the native resource is gone. In production I'm seeing crashes in the destructor. What constraints apply to HostObject destructors and what should I do instead?",
+          "should_trigger": true,
+          "expected_output": "Should explain that HostObject destructors are called by the GC on an arbitrary thread at an unspecified time, and that a Runtime& is not available inside the dtor — no VM operations are allowed. Should recommend queuing the cleanup work externally instead.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["GC", "garbage collect", "finaliz"],
+              "text": "Explains dtor is called by the GC"
+            },
+            {
+              "type": "contains_any",
+              "values": ["arbitrary thread", "no VM", "unsafe", "not allowed", "cannot", "must not"],
+              "text": "States VM operations are forbidden in the dtor"
+            },
+            {
+              "type": "contains_any",
+              "values": ["queue", "work queue", "dispatch"],
+              "text": "Recommends queuing work externally"
+            }
+          ]
+        },
+        {
+          "id": 104,
+          "prompt": "I found `ISerialization` in jsi.h and it looks perfect — I want to use structured clone to move objects between two Hermes runtime instances running on different threads. Is this API stable enough to use in a production React Native library?",
+          "should_trigger": true,
+          "expected_output": "Should note that ISerialization is gated behind #ifdef JSI_UNSTABLE and is explicitly subject to change. Should caution against production use.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["JSI_UNSTABLE", "unstable", "experimental", "subject to change"],
+              "text": "Warns that ISerialization is under JSI_UNSTABLE / experimental"
+            }
+          ]
+        },
+        {
+          "id": 105,
+          "prompt": "I have a C++ download manager that fires a completion callback on a background thread. I want to resolve a JavaScript Promise from that callback. I have a std::shared_ptr<CallInvoker> from the TurboModule setup. How do I safely call the JS resolve function?",
+          "should_trigger": true,
+          "expected_output": "Should show how to use callInvoker->invokeAsync to schedule a lambda on the JS thread, and inside that lambda use the stored resolve function (held as shared_ptr<jsi::Value>) to call it via jsi::Function.",
+          "assertions": [
+            {
+              "type": "contains",
+              "value": "invokeAsync",
+              "text": "Uses invokeAsync to schedule on JS thread"
+            },
+            {
+              "type": "contains_any",
+              "values": ["shared_ptr", "shared_ptr<jsi::Value>"],
+              "text": "Uses shared_ptr to hold the JS callback across threads"
+            }
+          ]
+        },
+        {
+          "id": 106,
+          "prompt": "I'm writing a JSI binding and I have a helper that extracts an integer field from a jsi::Object. I wrote `int id = (int)obj.getProperty(rt, \"id\").getNumber()`. Should I use getNumber() or asNumber() here, and what's the difference?",
+          "should_trigger": true,
+          "expected_output": "Should explain the get vs as naming convention: getXxx() asserts (debug-mode crash, no exception in release), asXxx() throws JSIException. Should recommend asNumber() when the caller wants a proper error on type mismatch rather than a silent assertion failure.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["assert", "asserts", "assertion"],
+              "text": "Explains getXxx asserts"
+            },
+            {
+              "type": "contains_any",
+              "values": ["JSIException", "throws", "exception"],
+              "text": "Explains asXxx throws JSIException"
+            }
+          ]
+        },
+        {
+          "id": 107,
+          "prompt": "I'm migrating a React Native module from the old bridge to JSI. My old module sends data from native to JS asynchronously and I wait for a callback. Will JSI function calls also be asynchronous?",
+          "should_trigger": true,
+          "expected_output": "Should explain that JSI calls are synchronous — the C++ function executes directly on the JS thread with no serialization or async queue. This is the key difference from the old bridge which used asynchronous JSON message passing.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["synchronous", "synchronously", "sync"],
+              "text": "States JSI calls are synchronous"
+            },
+            {
+              "type": "contains_any",
+              "values": ["serializ", "JSON", "async bridge", "old bridge", "asynchronous"],
+              "text": "Contrasts with old bridge async/serialization"
+            }
+          ]
+        },
+        {
+          "id": 108,
+          "prompt": "I want to write a new native module for React Native that exposes C++ functionality to JavaScript. Should I use raw JSI directly, TurboModules, or Nitro Modules?",
+          "should_trigger": true,
+          "expected_output": "Should explain that raw JSI is the low-level C++ API; TurboModules is the React Native framework layer on top of JSI with codegen and typed specs; Nitro Modules is a newer codegen-based approach with less boilerplate. For most production modules, TurboModules or Nitro is preferred over raw JSI.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["TurboModule", "Turbo Module"],
+              "text": "Mentions TurboModules"
+            },
+            {
+              "type": "contains_any",
+              "values": ["Nitro", "Nitro Module"],
+              "text": "Mentions Nitro Modules"
+            },
+            {
+              "type": "contains_any",
+              "values": ["codegen", "code generation", "typed spec", "type spec"],
+              "text": "Mentions codegen or typed specs as advantage"
+            }
+          ]
+        },
+        {
+          "id": 109,
+          "prompt": "I have a C++ function ready. How do I make it callable from JavaScript in a JSI binding? I see examples using rt.global() but I don't understand why.",
+          "should_trigger": true,
+          "expected_output": "Should explain that rt.global() is the JS global object (equivalent to globalThis in JS). Installing a function on it via setProperty makes it callable from any JS code. Should show createFromHostFunction + setProperty pattern.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["rt.global()", "global()"],
+              "text": "Explains rt.global() is the JS global object"
+            },
+            {
+              "type": "contains",
+              "value": "setProperty",
+              "text": "Shows setProperty to install the binding"
+            },
+            {
+              "type": "contains",
+              "value": "createFromHostFunction",
+              "text": "Uses createFromHostFunction"
+            }
+          ]
+        },
+        {
+          "id": 110,
+          "prompt": "Why do some JSI methods like `jsi::String::createFromAscii(rt, \"hello\")` require passing a `Runtime&` parameter, while others like `jsi::Value::undefined()` and `jsi::Value(42.0)` don't need it?",
+          "should_trigger": true,
+          "expected_output": "Should explain that methods that allocate engine-managed heap objects (strings, objects, functions, symbols, bigints) need the Runtime& to interact with the JS engine's allocator. Primitive value factories (undefined, null, bool, number) are stack-allocated C++ objects with no JS heap allocation.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["heap", "allocat", "engine memory", "engine-managed"],
+              "text": "Explains heap allocation requires Runtime&"
+            },
+            {
+              "type": "contains_any",
+              "values": ["primitive", "stack", "no allocation", "without allocat"],
+              "text": "Explains primitives don't need Runtime&"
+            }
+          ]
+        },
+        {
+          "id": 111,
+          "prompt": "I have a hot jsi::HostObject whose get() method is called thousands of times per second. Inside I call `jsi::PropNameID::forAscii(rt, \"x\")` and `jsi::PropNameID::forAscii(rt, \"y\")` on every invocation to compare property names. Is there a performance concern?",
+          "should_trigger": true,
+          "expected_output": "Should explain that PropNameID::forAscii hashes/interns the string on every call, which is expensive in a hot path. Should recommend caching the PropNameID instances as member variables initialized once in the constructor, then comparing against the cached instances.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["cache", "cach", "store", "member variable", "constructor"],
+              "text": "Recommends caching PropNameID"
+            },
+            {
+              "type": "contains_any",
+              "values": ["hash", "intern", "expensive", "overhead", "per call", "every call"],
+              "text": "Explains forAscii is expensive on every call"
+            }
+          ]
+        },
+        {
+          "id": 112,
+          "prompt": "I receive a jsi::Value from a HostFunction argument. It should be an object with a numeric field 'x' and a string field 'name'. How do I safely extract these as C++ values?",
+          "should_trigger": true,
+          "expected_output": "Should show: check isObject() or use asObject(rt) to downcast, then getProperty(rt, 'x').asNumber() for the number and getProperty(rt, 'name').asString(rt).utf8(rt) for the string. Should mention that asXxx() throws JSIException on type mismatch.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["asObject", "isObject"],
+              "text": "Downcasts to Object"
+            },
+            {
+              "type": "contains",
+              "value": "asNumber",
+              "text": "Extracts number with asNumber"
+            },
+            {
+              "type": "contains_any",
+              "values": ["asString", "utf8"],
+              "text": "Extracts string with asString / utf8"
+            }
+          ]
+        },
+        {
+          "id": 113,
+          "prompt": "I need to create JSI strings from two sources: hardcoded C++ identifiers like `\"onComplete\"` (pure ASCII), and user-provided text that could contain any Unicode characters. Which JSI string creation methods should I use for each case?",
+          "should_trigger": true,
+          "expected_output": "Should recommend createFromAscii for pure ASCII strings (faster, no encoding conversion). Should recommend createFromUtf8 for arbitrary Unicode text. Should warn that calling createFromAscii with non-ASCII bytes is undefined behavior.",
+          "assertions": [
+            {
+              "type": "contains",
+              "value": "createFromAscii",
+              "text": "Recommends createFromAscii for ASCII"
+            },
+            {
+              "type": "contains",
+              "value": "createFromUtf8",
+              "text": "Recommends createFromUtf8 for Unicode"
+            },
+            {
+              "type": "contains_any",
+              "values": ["undefined behavior", "UB", "non-ASCII", "not safe"],
+              "text": "Warns about UB when using createFromAscii with non-ASCII"
+            }
+          ]
+        },
+        {
+          "id": 114,
+          "prompt": "I need to pass 10,000 float sensor readings per frame from C++ to JavaScript. I'm building a jsi::Array and calling setValueAtIndex for each reading in a loop. The profiler shows this is slow. What's a better approach?",
+          "should_trigger": true,
+          "expected_output": "Should recommend using jsi::ArrayBuffer instead of jsi::Array for large numeric datasets. ArrayBuffer allows near-zero-copy transfer of typed binary data. JS can access it as a Float32Array or similar TypedArray.",
+          "assertions": [
+            {
+              "type": "contains",
+              "value": "ArrayBuffer",
+              "text": "Recommends ArrayBuffer for typed data"
+            },
+            {
+              "type": "contains_any",
+              "values": ["Float32Array", "TypedArray", "typed array", "zero-copy", "binary"],
+              "text": "Mentions TypedArray or zero-copy binary transfer"
+            }
+          ]
+        },
+        {
+          "id": 115,
+          "prompt": "What is a jsi::HostFunction and how does it differ from a JavaScript function written in JS?",
+          "should_trigger": true,
+          "expected_output": "Should explain that a HostFunction is a C++ callable wrapped as a JS function. When JS calls it, execution crosses synchronously from JS to C++. Created via jsi::Function::createFromHostFunction with a HostFunctionType (std::function<jsi::Value(jsi::Runtime&, const jsi::Value&, const jsi::Value*, size_t)>).",
+          "assertions": [
+            {
+              "type": "contains",
+              "value": "createFromHostFunction",
+              "text": "Mentions createFromHostFunction"
+            },
+            {
+              "type": "contains_any",
+              "values": ["C++", "native", "crossing", "boundary"],
+              "text": "Explains C++ implementation behind the JS function"
+            },
+            {
+              "type": "contains_any",
+              "values": ["synchronous", "synchronously", "sync", "directly"],
+              "text": "Explains call is synchronous"
+            }
+          ]
+        },
+        {
+          "id": 116,
+          "prompt": "From my C++ JSI module I need to call JavaScript's `JSON.stringify` to serialize a JS object to a string. How do I call an existing JavaScript function from C++?",
+          "should_trigger": true,
+          "expected_output": "Should show how to walk the global object: rt.global().getPropertyAsObject(rt, 'JSON').getPropertyAsFunction(rt, 'stringify').call(rt, value). Should explain rt.global() gives access to the JS global scope.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["rt.global()", "global()"],
+              "text": "Uses rt.global() to access global scope"
+            },
+            {
+              "type": "contains_any",
+              "values": ["getPropertyAsFunction", "getPropertyAsObject"],
+              "text": "Uses getPropertyAs helpers"
+            },
+            {
+              "type": "contains_any",
+              "values": ["stringify", "JSON"],
+              "text": "Demonstrates with JSON.stringify"
+            }
+          ]
+        },
+        {
+          "id": 117,
+          "prompt": "I want to expose a C++ object to JavaScript so that JS code can read and write properties on it, and the C++ side handles those property accesses. What JSI type should I use and how do I set it up?",
+          "should_trigger": true,
+          "expected_output": "Should explain jsi::HostObject — a C++ class that overrides get() and set() methods to intercept JS property access. Instantiated with jsi::Object::createFromHostObject and installed on the runtime.",
+          "assertions": [
+            {
+              "type": "contains",
+              "value": "HostObject",
+              "text": "Recommends HostObject"
+            },
+            {
+              "type": "contains",
+              "value": "createFromHostObject",
+              "text": "Shows createFromHostObject"
+            },
+            {
+              "type": "contains_any",
+              "values": ["get(", "set(", "override"],
+              "text": "Mentions overriding get/set methods"
+            }
+          ]
+        },
+        {
+          "id": 118,
+          "prompt": "I'm storing a `jsi::Function callback_` as a plain class member in my JSI module. In development, after a hot reload, the app crashes when the callback is invoked. What is causing this?",
+          "should_trigger": true,
+          "expected_output": "Should explain that on hot reload, the old jsi::Runtime is torn down. Any stored jsi::Value/jsi::Function still held as class members now points into destroyed engine memory. Should recommend clearing stored JSI values in the module's invalidate() / teardown hook, and using shared_ptr to make lifetime management explicit.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["hot reload", "bundle reload", "runtime torn down", "runtime is destroyed", "runtime teardown"],
+              "text": "Identifies hot reload / runtime teardown as cause"
+            },
+            {
+              "type": "contains_any",
+              "values": ["invalidate", "teardown", "clear", "nullify"],
+              "text": "Recommends clearing stored values in teardown hook"
+            }
+          ]
+        },
+        {
+          "id": 119,
+          "prompt": "In my HostFunction I call a JavaScript callback that might throw. I need to distinguish between two error cases: (1) the JavaScript callback itself threw an Error, and (2) I passed wrong argument types to a JSI API call. How do I handle these separately?",
+          "should_trigger": true,
+          "expected_output": "Should explain the exception hierarchy: JSIException is the base, JSError is thrown when JS code throws (carries the JS Error value, message, stack), JSINativeException is thrown on C++ API misuse. Should show catch blocks ordered most-specific first: JSError then JSINativeException then JSIException.",
+          "assertions": [
+            {
+              "type": "contains",
+              "value": "JSError",
+              "text": "Mentions JSError for JS-side throws"
+            },
+            {
+              "type": "contains",
+              "value": "JSINativeException",
+              "text": "Mentions JSINativeException for C++ API misuse"
+            },
+            {
+              "type": "contains_any",
+              "values": ["JSIException", "hierarchy", "base class", "inherits"],
+              "text": "Mentions JSIException base or hierarchy"
+            }
+          ]
+        },
+        {
+          "id": 120,
+          "prompt": "I have a large binary buffer in C++ (a decoded image, about 4MB). I want to expose it to JavaScript as an ArrayBuffer without copying the memory. How do I create a zero-copy JSI ArrayBuffer?",
+          "should_trigger": true,
+          "expected_output": "Should show implementing a jsi::MutableBuffer subclass, overriding data() to return the buffer pointer and size() to return byte count. Then create with jsi::ArrayBuffer(rt, std::make_shared<MyBuffer>(...)).",
+          "assertions": [
+            {
+              "type": "contains",
+              "value": "MutableBuffer",
+              "text": "Uses MutableBuffer for zero-copy"
+            },
+            {
+              "type": "contains_any",
+              "values": ["data()", "size()"],
+              "text": "Overrides data() and size() methods"
+            }
+          ]
+        },
+        {
+          "id": 121,
+          "prompt": "I have 50 telemetry values to send from C++ to JavaScript on every animation frame. Currently I call my JSI binding function 50 times per frame in a loop. The frame rate drops noticeably. How should I optimize this?",
+          "should_trigger": true,
+          "expected_output": "Should explain that each JSI call has overhead from crossing the C++/JS boundary. Should recommend batching all 50 values into a single jsi::Array or jsi::Object and making one JSI call per frame instead of 50.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["batch", "single call", "one call", "Array", "Object"],
+              "text": "Recommends batching into single call"
+            },
+            {
+              "type": "contains_any",
+              "values": ["overhead", "boundary", "crossing", "cost per call"],
+              "text": "Explains per-call overhead"
+            }
+          ]
+        },
+        {
+          "id": 122,
+          "prompt": "I created a bare jsi::Runtime and wrote some JavaScript that uses setTimeout and setInterval. The callbacks never fire. Why?",
+          "should_trigger": true,
+          "expected_output": "Should explain that a bare jsi::Runtime has no event loop — there is no mechanism to schedule deferred callbacks. setTimeout and setInterval are Web/platform APIs that must be implemented on top of the runtime. React Native's runtime layer provides them, but a raw JSI runtime does not.",
+          "assertions": [
+            {
+              "type": "contains_any",
+              "values": ["event loop", "no event loop", "event-loop"],
+              "text": "Explains bare runtime has no event loop"
+            },
+            {
+              "type": "contains_any",
+              "values": ["platform API", "Web API", "not built-in", "not provided", "must be implemented", "implemented on top"],
+              "text": "Explains setTimeout is not a JSI built-in"
+            }
+          ]
+        },
+        {
+          "id": 123,
+          "prompt": "I need to access a single jsi::Runtime from two C++ threads simultaneously — a UI thread and a background processing thread. I added a `std::mutex` and lock it before every JSI call. Is a plain external mutex sufficient?",
+          "should_trigger": true,
+          "expected_output": "Should explain that a plain external mutex is not sufficient because JSI methods don't use it internally — JSI has no built-in locking. Should recommend jsi::WithRuntimeDecorator<AroundLock> which wraps every JSI call with the lock, ensuring no JSI operation runs without holding it.",
+          "assertions": [
+            {
+              "type": "contains",
+              "value": "WithRuntimeDecorator",
+              "text": "Recommends WithRuntimeDecorator"
+            },
+            {
+              "type": "contains_any",
+              "values": ["AroundLock", "around lock"],
+              "text": "Mentions AroundLock"
+            }
+          ]
+        },
+        {
+          "id": 124,
+          "prompt": "I need to create a JavaScript Set from C++ in a JSI binding and pre-populate it with several string values before returning it to JavaScript. How do I call `new Set()` from C++?",
+          "should_trigger": true,
+          "expected_output": "Should show: get the Set constructor with rt.global().getPropertyAsFunction(rt, 'Set'), call callAsConstructor(rt) to create the instance, then get the 'add' method and call it for each value.",
+          "assertions": [
+            {
+              "type": "contains",
+              "value": "callAsConstructor",
+              "text": "Uses callAsConstructor"
+            },
+            {
+              "type": "contains_any",
+              "values": ["getPropertyAsFunction", "getPropertyAsObject"],
+              "text": "Uses getPropertyAs to get the Set constructor"
+            },
+            {
+              "type": "contains",
+              "value": "Set",
+              "text": "Demonstrates with JS Set"
+            }
+          ]
+        },
+        {
+          "id": 125,
+          "prompt": "My JSI HostObject holds a 200MB native image buffer. The JavaScript GC isn't collecting the object promptly even when it's no longer referenced in JS, causing sustained high memory usage. How can I help the GC prioritize this object for collection?",
+          "should_trigger": true,
+          "expected_output": "Should explain setExternalMemoryPressure — a JSI API that hints to the GC about the amount of native memory held by a JS object. Calling it with the object and byte count makes the GC factor in the native allocation when deciding when to collect.",
+          "assertions": [
+            {
+              "type": "contains",
+              "value": "setExternalMemoryPressure",
+              "text": "Mentions setExternalMemoryPressure"
+            },
+            {
+              "type": "contains_any",
+              "values": ["GC", "garbage collect", "hint", "pressure"],
+              "text": "Explains it is a GC hint"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
