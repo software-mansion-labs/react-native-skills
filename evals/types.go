@@ -32,9 +32,10 @@ func (e Eval) ShouldTriggerVal() bool {
 
 // Assertion is a machine-checkable condition on the eval output.
 type Assertion struct {
-	Type  string `json:"type"`
-	Value string `json:"value"`
-	Text  string `json:"text,omitempty"`
+	Type   string   `json:"type"`
+	Value  string   `json:"value,omitempty"`
+	Values []string `json:"values,omitempty"`
+	Text   string   `json:"text,omitempty"`
 }
 
 // GradingResult holds the outcome of grading a single assertion.

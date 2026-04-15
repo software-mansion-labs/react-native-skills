@@ -21,6 +21,15 @@ func gradeAssertion(a Assertion, response, runDir string) GradingResult {
 		}
 		return GradingResult{Text: text, Passed: false, Evidence: fmt.Sprintf("'%s' not found in response", a.Value)}
 
+	case "contains_any":
+		lowerResponse := strings.ToLower(response)
+		for _, v := range a.Values {
+			if strings.Contains(lowerResponse, strings.ToLower(v)) {
+				return GradingResult{Text: text, Passed: true, Evidence: fmt.Sprintf("Found '%s' in response", v)}
+			}
+		}
+		return GradingResult{Text: text, Passed: false, Evidence: fmt.Sprintf("None of %v found in response", a.Values)}
+
 	case "not_contains":
 		if strings.Contains(strings.ToLower(response), strings.ToLower(a.Value)) {
 			return GradingResult{Text: text, Passed: false, Evidence: fmt.Sprintf("Found '%s' in response (should not be present)", a.Value)}
