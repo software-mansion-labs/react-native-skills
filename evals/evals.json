@@ -131,8 +131,8 @@
       "evals": []
     },
     {
-      "skill_name": "jsi-bridge",
-      "skill_path": "../skills/react-native-best-practices/references/jsi-bridge",
+      "skill_name": "jsi",
+      "skill_path": "../skills/react-native-best-practices/references/jsi",
       "evals": [
         {
           "id": 100,
