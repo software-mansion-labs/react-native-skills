@@ -15,11 +15,13 @@ Software Mansion's production guide for adding Meta Quest support to Expo apps u
 What do you need to do?
 │
 ├── Starting from scratch or adding Quest support to an existing Expo app?
-│   └── Webfetch: expo-horizon-core README
+│   └── Follow the "Setup Workflow" below (do NOT auto-install location or
+│       notifications packages) and webfetch: expo-horizon-core README
 │       ├── Install expo-horizon-core
 │       ├── Configure the config plugin (horizonAppId, panel size, supportedDevices)
 │       ├── Add quest/mobile build scripts
-│       └── Add runtime device detection (isHorizonDevice, isHorizonBuild)
+│       ├── Add runtime device detection (isHorizonDevice, isHorizonBuild)
+│       └── Detect expo-location / expo-notifications, then ASK before migrating
 │
 ├── Need location services on Quest?
 │   └── Webfetch: expo-horizon-location README
@@ -41,9 +43,54 @@ What do you need to do?
         └── Meta Horizon Store manifest requirements
 ```
 
+## Setup Workflow (adding Quest support to an existing Expo app)
+
+Follow these steps **in order** when the user asks to add Meta Quest support. Do not combine steps 2 and 3 into a single install command — the sibling packages require explicit user confirmation.
+
+1. **Install and configure `expo-horizon-core`.**
+   - Run `npx expo install expo-horizon-core`.
+   - **Ask the user for the config plugin values before writing them.** Present all options in a single prompt so the user can paste custom values or accept defaults in one pass. Show each option on its own line with its default in brackets, e.g.:
+     > I'll add the `expo-horizon-core` config plugin to `app.json`. Please confirm or override each value (press Enter / reply "default" to accept the bracketed default):
+     >
+     > - `supportedDevices` [`quest2|quest3|quest3s`] — pipe-separated Quest devices your app supports (**required** for Meta Horizon Store submission).
+     > - `horizonAppId` [empty] — Meta Horizon application ID. Leave empty unless you plan to use push notifications; required by `expo-horizon-notifications` to issue device push tokens.
+     > - `defaultWidth` [`1024dp`] — Default panel width. Leave blank to omit.
+     > - `defaultHeight` [`640dp`] — Default panel height. Leave blank to omit. If you set width/height, make sure your Expo `orientation` matches (use `"landscape"` for wide panels).
+     > - `disableVrHeadtracking` [`false`] — Set `true` to omit the `android.hardware.vr.headtracking` manifest entry.
+     > - `allowBackup` [`false`] — Meta recommends `false` for sensitive data; set `true` only if you need Android backup in the Quest build.
+   - Only write the plugin config after the user replies. Omit any option the user left blank so the package's own default applies (don't write empty strings for `horizonAppId`, `defaultWidth`, or `defaultHeight`).
+   - Add `quest` / `mobile` build scripts to `package.json`.
+   - Run `npx expo prebuild --clean`.
+   - Webfetch the [expo-horizon-core README](https://github.com/software-mansion-labs/expo-horizon/blob/main/expo-horizon-core/README.md) for current option names and defaults before asking — the defaults above can change between releases.
+
+2. **Detect existing location / notification packages. Do NOT install the horizon equivalents yet.**
+   - Read the project's `package.json`.
+   - Check `dependencies` and `devDependencies` for `expo-location` and `expo-notifications`.
+   - If neither is present, skip the rest of this workflow — the user has no migration to do.
+
+3. **For each detected package, ask the user before migrating.**
+   - If `expo-location` is found, ask:
+     > "I found `expo-location` in your project. Do you want me to replace it with `expo-horizon-location` so location works on Meta Quest? (Quest has no GPS, heading, geocoding, or geofencing — unsupported calls will need to be guarded with `ExpoHorizon.isHorizonDevice`.)"
+   - If `expo-notifications` is found, ask:
+     > "I found `expo-notifications` in your project. Do you want me to replace it with `expo-horizon-notifications` so push notifications work on Meta Quest? This requires a `horizonAppId` in the core config plugin, uses Meta's push service (not the Expo Push Service), and does not support badge counts or `getExpoPushTokenAsync`."
+   - Present the questions together if both packages are present.
+   - **Wait for an explicit answer before running any install or edit for these packages.**
+
+4. **Only after the user confirms**, perform the migration for the approved package(s):
+   - Install the horizon equivalent (`npx expo install expo-horizon-location` or `expo-horizon-notifications`).
+   - Uninstall the original (`npm uninstall expo-location` or `expo-notifications`).
+   - Update all `import` statements to the horizon package name.
+   - For notifications: ensure `horizonAppId` is set in the `expo-horizon-core` plugin config and add `expo-horizon-notifications` to the plugins array.
+   - Run `npx expo prebuild --clean` again.
+   - Webfetch the relevant README (location or notifications) for the full feature support matrix and guard unsupported calls behind `ExpoHorizon.isHorizonDevice`.
+
+5. **If the user declines a migration**, leave the original package untouched and note in the summary that feature X (location / notifications) will not work on the `quest` build until migrated.
+
 ## Critical Rules
 
 - **Always install `expo-horizon-core` first.** It is required by all other expo-horizon packages and sets up the `quest`/`mobile` build flavors that other packages depend on.
+
+- **Never auto-install `expo-horizon-location` or `expo-horizon-notifications`.** When adding Quest support, detect existing `expo-location` / `expo-notifications` dependencies in `package.json` and ask the user whether to migrate each one. Install and configure only the packages the user explicitly approves. See the Setup Workflow above.
 
 - **Use `quest` build variants only on Meta Quest devices.** Running `questDebug` or `questRelease` builds on standard Android phones is unsupported and will behave unexpectedly.
 
