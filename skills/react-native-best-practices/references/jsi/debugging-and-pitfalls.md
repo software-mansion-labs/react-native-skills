@@ -41,7 +41,7 @@ The thread name tells you which domain crashed:
 |---|---|
 | `mqt_js` | JS thread (React Native's message queue thread) |
 | `mqt_native_modules` | Legacy bridge thread (rare on New Architecture) |
-| `main` | Android main thread / iOS main thread |
+| `main` (iOS) / app name e.g. `com.myapp` (Android) | Main/UI thread |
 | Any other name | A background thread you (or a library) created |
 
 If `mqt_js` is the crashing thread, the JS thread is involved — look for GC finalization, HostObject destruction, or a JSI call made from the wrong thread. If a background thread is the crashing thread, look for ownership bugs: a raw pointer to memory that the JS thread's GC freed.

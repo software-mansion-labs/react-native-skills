@@ -11,7 +11,7 @@ React Native runs across three execution domains. Understanding which thread a c
 | Thread | Name in crash traces | What runs there |
 |---|---|---|
 | **JS Thread** | `mqt_js` | Hermes engine, all JS/TS code, JSI calls |
-| **UI / Main Thread** | `main` | Native view rendering, layout, touch hit-testing (UIKit on iOS, View system on Android) |
+| **UI / Main Thread** | `main` (iOS) / app package name e.g. `com.myapp` (Android) | Native view rendering, layout, touch hit-testing (UIKit on iOS, View system on Android) |
 | **Native Background** | varies (`AudioEncoder`, `RNBGThread`, etc.) | File I/O, network, audio, any heavy native work dispatched from a native module |
 
 These domains **do not share mutable state**. In the old architecture they communicated exclusively via serialized messages. The New Architecture adds shared immutable C++ data structures (the Fabric shadow tree) and the direct JSI call path, but the fundamental isolation still holds: you cannot safely access one thread's mutable state from another.
