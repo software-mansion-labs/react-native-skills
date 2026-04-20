@@ -42,6 +42,7 @@ Production patterns for React Native apps on the New Architecture, covering:
 | **Rich Text** | Rich text editing with react-native-enriched and Markdown rendering with react-native-enriched-markdown: formatting toolbar, mentions, links, GFM tables, task lists, LaTeX math |
 | **Multithreading** | Worker Runtimes, scheduling APIs, shared memory with React Native Worklets |
 | **Audio** | Playback, recording, visualization, session management with React Native Audio API |
+| **JSI** | C++ JavaScript Interface: `HostObject`, `HostFunction`, `NativeState`, zero-copy `ArrayBuffer`, threading safety, `CallInvoker`, TurboModules vs Nitro Modules, C++ memory patterns, crash debugging |
 
 ### [radon-mcp](./skills/radon-mcp/)
 
@@ -119,10 +120,22 @@ react-native-skills/
         │   │   └── vision.md
         │   ├── rich-text/
         │   │   └── SKILL.md
-        │   └── svg/
+        │   ├── svg/
+        │   │   ├── SKILL.md
+        │   │   ├── svg.md
+        │   │   └── when-to-use.md
+        │   └── jsi/
         │       ├── SKILL.md
-        │       ├── svg.md
-        │       └── when-to-use.md
+        │       ├── overview.md
+        │       ├── core-types.md
+        │       ├── casting-and-serialization.md
+        │       ├── threading-safety.md
+        │       ├── calling-js-and-async.md
+        │       ├── performance.md
+        │       ├── setup-and-templates.md
+        │       ├── module-approaches.md
+        │       ├── cpp-memory-patterns.md
+        │       └── debugging-and-pitfalls.md
         ├── README.md
         └── SKILL.md
 ```
