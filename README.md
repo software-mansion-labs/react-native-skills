@@ -63,16 +63,9 @@ task eval:grade -- /path/to/workspace   # grade a skill-creator workspace
 
 ```
 react-native-skills/
-├── Taskfile.yml
-├── evals/
-│   ├── README.md
-│   ├── evals.json
-│   ├── grader.go
-│   ├── loader.go
-│   ├── main.go
-│   ├── types.go
-│   └── workspace.go
 └── skills/
+    ├── expo-horizon/
+    │   └── SKILL.md
     ├── radon-mcp/
     │   ├── references/
     │   │   ├── get-library-description.md
