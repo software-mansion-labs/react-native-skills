@@ -18,8 +18,8 @@ tasks:
       - go build -o skill-lint .
       - ./skill-lint ../skills
     sources:
-      - '{{.LINT_DIR}}/*.go'
-      - '{{.SKILLS_DIR}}/**/*.md'
+      - '*.go'
+      - '../skills/**/*.md'
 
   lint:build:
     desc: Build the skill linter binary
@@ -27,9 +27,9 @@ tasks:
     cmds:
       - go build -o skill-lint .
     sources:
-      - '{{.LINT_DIR}}/*.go'
+      - '*.go'
     generates:
-      - '{{.LINT_DIR}}/skill-lint'
+      - skill-lint
 
   lint:test:
     desc: Run linter unit tests
