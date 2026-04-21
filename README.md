@@ -47,6 +47,10 @@ Production patterns for React Native apps on the New Architecture, covering:
 
 Best practices for using Radon IDE's MCP tools when developing, debugging, and inspecting React Native and Expo apps. Covers viewing screenshots, reading logs, inspecting the component tree, debugging network requests, reloading the app, and querying React Native documentation.
 
+### [typegpu](./skills/typegpu/)
+
+Practical guidance for building with TypeGPU, from project setup and schema design through shader authoring, resource management, and pipeline composition. It helps an AI coding agent work confidently across the CPU/GPU boundary while avoiding common typing, memory-layout, and WebGPU integration mistakes.
+
 ## Development
 
 This project uses [Task](https://taskfile.dev) as a task runner. Install with `brew install go-task`.
@@ -76,6 +80,18 @@ react-native-skills/
     │   │   ├── view-network-logs.md
     │   │   ├── view-network-request-details.md
     │   │   └── view-screenshot.md
+    │   └── SKILL.md
+    ├── typegpu/
+    │   ├── references/
+    │   │   ├── advanced.md
+    │   │   ├── matrices.md
+    │   │   ├── noise.md
+    │   │   ├── pipelines.md
+    │   │   ├── sdf.md
+    │   │   ├── setup.md
+    │   │   ├── shaders.md
+    │   │   ├── textures.md
+    │   │   └── types.md
     │   └── SKILL.md
     └── react-native-best-practices/
         ├── references/
