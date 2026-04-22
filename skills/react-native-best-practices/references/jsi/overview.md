@@ -65,6 +65,8 @@ Hermes uses a garbage collector called **Hades** (Hermes Approach to Decreasing 
 
 This matters for frame budgets: the old Hermes GC (GenGC) had full STW pauses that could be tens of milliseconds on large heaps. Hades reduces pause times by roughly an order of magnitude by doing most work concurrently.
 
+**Identifying which GC is active:** Hades shipped in React Native 0.69 (Hermes 0.11). To check: look at the `hermes` version in `node_modules/hermes-engine/package.json`, or check the `hermesVersion` field in the Metro bundle output. In crash traces, GenGC appears as `facebook::hermes::vm::GenGC::collect` while Hades appears as `facebook::hermes::vm::Hades::collectOG`. Apps on RN < 0.69 use GenGC and can eliminate long GC pauses by upgrading.
+
 **In crash traces,** Hades activity appears as `facebook::hermes::vm::Hades::collectOG` (old-generation collection) on the `mqt_js` thread. Seeing this alongside a native thread crash is a signal that GC finalization ran a C++ destructor — a common source of use-after-free bugs when ownership across the JS/native boundary is not explicit.
 
 ---
