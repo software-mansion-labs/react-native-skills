@@ -70,6 +70,33 @@ react-native-skills/
 └── skills/
     ├── expo-horizon/
     │   └── SKILL.md
+    ├── haptics/
+    │   ├── references/
+    │   │   ├── android/
+    │   │   │   ├── SKILL.md
+    │   │   │   ├── api-overview.md
+    │   │   │   ├── gesture-haptics.md
+    │   │   │   ├── pattern-composer.md
+    │   │   │   ├── presets-guide.md
+    │   │   │   └── types-reference.md
+    │   │   ├── common/
+    │   │   │   ├── design-principles.md
+    │   │   │   ├── gesture-haptics.md
+    │   │   │   ├── preset-tags.md
+    │   │   │   └── presets-guide.md
+    │   │   ├── ios/
+    │   │   │   ├── SKILL.md
+    │   │   │   ├── api-overview.md
+    │   │   │   ├── gesture-haptics.md
+    │   │   │   ├── pattern-composer.md
+    │   │   │   └── presets-guide.md
+    │   │   └── react-native/
+    │   │       ├── SKILL.md
+    │   │       ├── api-overview.md
+    │   │       ├── gesture-haptics.md
+    │   │       ├── migration.md
+    │   │       └── presets-guide.md
+    │   └── SKILL.md
     ├── radon-mcp/
     │   ├── references/
     │   │   ├── get-library-description.md
@@ -122,6 +149,17 @@ react-native-skills/
         │   │   ├── swipeable-and-drawer.md
         │   │   ├── tap-handling.md
         │   │   └── testing.md
+        │   ├── haptics/
+        │   │   ├── common/
+        │   │   │   ├── design-principles.md
+        │   │   │   ├── gesture-haptics.md
+        │   │   │   ├── preset-tags.md
+        │   │   │   └── presets-guide.md
+        │   │   ├── SKILL.md
+        │   │   ├── api-overview.md
+        │   │   ├── gesture-haptics.md
+        │   │   ├── migration.md
+        │   │   └── presets-guide.md
         │   ├── multithreading/
         │   │   ├── SKILL.md
         │   │   ├── setup-and-advanced.md
